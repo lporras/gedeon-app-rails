@@ -1,3 +1,4 @@
+<%= render 'shared/theme_toggle' %>
 <%# search form moved below the fixed A–Z bar spacer %>
 
 <%# Install banner (hidden by default, toggled by JS) %>
@@ -16,7 +17,7 @@
     <span>En iPhone: toca Compartir → “Añadir a pantalla de inicio”.</span>
   </div>
   <div class="divider m-0"></div>
-  
+
   <dialog id="install-modal" class="modal">
     <div class="modal-box">
       <h3 class="font-bold text-lg mb-2">Cómo instalar en iPhone</h3>
@@ -57,8 +58,8 @@
 <%# Page header with church/account name (scrolls away) %>
 <div class="max-w-screen-lg px-2 mb-2">
   <% account_name = ActsAsTenant.current_tenant&.name || 'Tu Iglesia' %>
-  <div class="card">
-    <div class="card-body py-3 px-4">
+  <div>
+    <div class="py-3">
       <h1 class="text-xl sm:text-2xl font-extrabold">
         Canciones de la Iglesia <span class="text-primary"><%= account_name %></span>
       </h1>
@@ -72,12 +73,12 @@
   <div class="px-2 py-2">
     <div class="flex flex-wrap items-center gap-1 sm:gap-2" data-controller="letter-nav">
       <%- grouped_songs.keys.sort.each do |letter| %>
-        <%= link_to "#letter-#{letter}", 
-            class: "btn btn-ghost btn-xs letter-btn", 
-            data: { 
+        <%= link_to "#letter-#{letter}",
+            class: "btn btn-ghost btn-xs letter-btn",
+            data: {
               action: "click->letter-nav#selectLetter",
               letter: letter,
-              target: "letter-nav.letter" 
+              target: "letter-nav.letter"
             } do %>
           <%= letter %>
         <% end %>
@@ -106,12 +107,12 @@
   <%- grouped_songs.each_pair do |letter, songs| %>
     <div id="letter-<%= letter %>" class="scroll-mt-16" data-letter-section="<%= letter %>">
       <div class="-mx-2 px-2 py-2 bg-base-100/95 border-b border-base-300">
-        <h2 class="text-2xl font-extrabold text-primary"><%= letter %> <span class="badge badge-neutral align-middle ml-2"><%= songs.size %></span></h2>
+        <h2 class="text-2xl font-extrabold text-primary px-2"><%= letter %> <span class="badge badge-neutral align-middle ml-2"><%= songs.size %></span></h2>
       </div>
       <div class="mt-2 flex flex-col gap-3">
         <%- songs.each do |song| %>
           <details class="group collapse collapse-arrow bg-base-100 border border-base-300 rounded-xl transition duration-200 hover:border-primary/60 hover:shadow-sm">
-            <summary class="collapse-title list-none font-semibold text-blue-600 flex items-center justify-between">
+            <summary class="collapse-title list-none font-semibold text-primary hover:text-primary-focus flex items-center justify-between">
               <%= song.title %>
               <span class="badge badge-ghost group-open:hidden">ver letra</span>
             </summary>
@@ -133,7 +134,7 @@
         <h3 class="card-title">No se encontraron canciones</h3>
         <% if params[:q].present? %>
           <p class="text-sm opacity-70">Intenta ajustar tu búsqueda.</p>
-          <%= link_to 'Limpiar búsqueda', app_path, class: 'btn btn-ghost btn-sm mt-2' %>
+          <%= link_to 'Limpiar búsqueda', app_path, class: 'btn btn-sm mt-2' %>
         <% else %>
           <p class="text-sm opacity-70">Aún no hay canciones.</p>
         <% end %>

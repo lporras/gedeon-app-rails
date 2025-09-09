@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html data-theme="light">
   <head>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -15,8 +15,61 @@
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+    <script>
+      // Theme controller initialization
+      function initializeTheme() {
+        // Check for saved theme preference or use system preference
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const savedTheme = localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light');
+
+        // Apply the saved theme
+        if (savedTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+
+        // Set up theme toggle functionality
+        const themeToggle = document.querySelector('.theme-toggle');
+        if (themeToggle) {
+          // Set initial toggle state and sync with theme
+          const updateToggleState = (isDark) => {
+            themeToggle.checked = isDark;
+            // Force a reflow to ensure the transition works
+            void themeToggle.offsetWidth;
+          };
+
+          updateToggleState(savedTheme === 'dark');
+
+          // Add event listener for theme toggle
+          themeToggle.addEventListener('click', function() {
+            const isDark = this.checked;
+            if (isDark) {
+              document.documentElement.classList.add('dark');
+              document.documentElement.setAttribute('data-theme', 'dark');
+              localStorage.setItem('theme', 'dark');
+            } else {
+              document.documentElement.classList.remove('dark');
+              document.documentElement.setAttribute('data-theme', 'light');
+              localStorage.setItem('theme', 'light');
+            }
+            // Update toggle state after a small delay to ensure smooth transition
+            setTimeout(() => updateToggleState(isDark), 10);
+          });
+        }
+      }
+
+      // Initialize on page load
+      document.addEventListener('DOMContentLoaded', initializeTheme);
+
+      // Re-initialize after Turbo navigation
+      document.addEventListener('turbo:load', initializeTheme);
+      document.addEventListener('turbo:render', initializeTheme);
+    </script>
   </head>
-  <body class="bg-base-200">
+  <body>
     <main class="phone-6">
       <%= yield %>
     </main>
