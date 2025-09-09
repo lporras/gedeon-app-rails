@@ -18,22 +18,8 @@
 
 <%# Sticky A–Z index and search (remains visible) %>
 <div class="sticky top-0 left-0 right-0 z-40 bg-base-100/95 backdrop-blur border-b border-base-300">
-  <!-- Letters row: single-line, scrollable on mobile -->
-  <div class="px-2 py-2">
-    <div class="flex flex-wrap items-center gap-1 sm:gap-2" data-controller="letter-nav">
-      <%- grouped_songs.keys.sort.each do |letter| %>
-        <%= link_to "#letter-#{letter}",
-            class: "btn btn-ghost btn-xs letter-btn",
-            data: {
-              action: "click->letter-nav#selectLetter",
-              letter: letter,
-              target: "letter-nav.letter"
-            } do %>
-          <%= letter %>
-        <% end %>
-      <%- end %>
-    </div>
-  </div>
+  <!-- Letters navigation partial -->
+  <%= render 'songs/letters_nav', letters: grouped_songs.keys.sort %>
   <!-- Search form partial -->
   <%= render 'shared/search_form', q: @q %>
 </div>
