@@ -1,59 +1,8 @@
 <%= render 'shared/theme_toggle' %>
 <%# search form moved below the fixed A–Z bar spacer %>
 
-<%# Install banner (hidden by default, toggled by JS) %>
-<div id="install-banner" class="hidden fixed bottom-0 inset-x-0 z-50">
-  <div class="alert shadow bg-base-100 border border-base-300 rounded-t-xl">
-    <div class="flex-1">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v12m0 0l-3-3m3 3l3-3M4 20h16"/></svg>
-      <span>Instala esta app en tu teléfono para un acceso rápido.</span>
-    </div>
-    <div class="flex items-center gap-2">
-      <button id="install-action" class="btn btn-primary btn-sm" onclick="(function(){var tip=document.getElementById('ios-tip'); if(tip){tip.classList.remove('hidden');} var m=document.getElementById('install-modal'); if(m && m.showModal){try{m.showModal();}catch(e){}}})();">Instalar</button>
-      <button id="install-dismiss" class="btn btn-ghost btn-sm" onclick="try{localStorage.setItem('hm_install_banner_dismissed_v2','1');}catch(e){} this.closest('#install-banner').classList.add('hidden'); return false;">No ahora</button>
-    </div>
-  </div>
-  <div id="ios-tip" class="hidden alert bg-base-100 border-t border-base-300 rounded-none">
-    <span>En iPhone: toca Compartir → “Añadir a pantalla de inicio”.</span>
-  </div>
-  <div class="divider m-0"></div>
-
-  <dialog id="install-modal" class="modal">
-    <div class="modal-box">
-      <h3 class="font-bold text-lg mb-2">Cómo instalar en iPhone</h3>
-      <ol class="list-decimal ml-5 space-y-2 text-sm">
-        <li>Toca el botón <strong>Compartir</strong> en la barra inferior.</li>
-        <li>Desliza hacia abajo y selecciona <strong>“Añadir a pantalla de inicio”</strong>.</li>
-        <li>Confirma el nombre y pulsa <strong>Añadir</strong>.</li>
-      </ol>
-      <div class="modal-action">
-        <form method="dialog">
-          <button class="btn">Cerrar</button>
-        </form>
-      </div>
-    </div>
-    <form method="dialog" class="modal-backdrop">
-      <button>close</button>
-    </form>
-  </dialog>
-
-  <script>
-    (function(){
-      try {
-        var ua = navigator.userAgent || '';
-        var isIOS = /iphone|ipad|ipod/i.test(ua);
-        var standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
-        var dismissed = localStorage.getItem('hm_install_banner_dismissed_v2') === '1';
-        var onAppPath = location.pathname.indexOf('/app') === 0;
-        if (isIOS && !standalone && !dismissed && onAppPath) {
-          var banner = document.getElementById('install-banner');
-          if (banner) banner.classList.remove('hidden');
-          // Keep instructions hidden until user taps Install (handled by application.js)
-        }
-      } catch(e) {}
-    })();
-  </script>
-  </div>
+<%# Install banner - uses Stimulus controller for PWA installation %>
+<%= render 'shared/install_banner' %>
 
 <%# Page header with church/account name (scrolls away) %>
 <div class="max-w-screen-lg px-2 mb-2">
