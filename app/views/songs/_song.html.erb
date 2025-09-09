@@ -1,0 +1,12 @@
+<%# _song.html.erb - Renders a single song in a collapsible component %>
+<details class="group collapse collapse-arrow bg-base-100 border border-base-300 rounded-xl transition duration-200 hover:border-primary/60 hover:shadow-sm">
+  <summary class="collapse-title list-none font-semibold text-primary hover:text-primary-focus flex items-center justify-between">
+    <%= song.title %>
+    <span class="badge badge-ghost group-open:hidden">ver letra</span>
+  </summary>
+  <div class="collapse-content pt-0">
+    <article class="prose max-w-none mt-2">
+      <%= simple_format song.content %>
+    </article>
+  </div>
+</details>

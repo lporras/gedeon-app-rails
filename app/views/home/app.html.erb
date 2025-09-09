@@ -40,42 +40,11 @@
 <div class="divider"></div>
 
 <% if @songs.any? %>
-<div class="flex flex-col w-full gap-10 mt-3">
-  <%- grouped_songs.each_pair do |letter, songs| %>
-    <div id="letter-<%= letter %>" class="scroll-mt-16" data-letter-section="<%= letter %>">
-      <div class="-mx-2 px-2 py-2 bg-base-100/95 border-b border-base-300">
-        <h2 class="text-2xl font-extrabold text-primary px-2"><%= letter %> <span class="badge badge-neutral align-middle ml-2"><%= songs.size %></span></h2>
-      </div>
-      <div class="mt-2 flex flex-col gap-3">
-        <%- songs.each do |song| %>
-          <details class="group collapse collapse-arrow bg-base-100 border border-base-300 rounded-xl transition duration-200 hover:border-primary/60 hover:shadow-sm">
-            <summary class="collapse-title list-none font-semibold text-primary hover:text-primary-focus flex items-center justify-between">
-              <%= song.title %>
-              <span class="badge badge-ghost group-open:hidden">ver letra</span>
-            </summary>
-            <div class="collapse-content pt-0">
-              <article class="prose max-w-none mt-2">
-                <%= simple_format song.content %>
-              </article>
-            </div>
-          </details>
-        <%- end %>
-      </div>
-    </section>
-  <%- end %>
-</div>
-<% else %>
-  <div class="mx-auto max-w-screen-lg px-2 mt-6">
-    <div class="card bg-base-100 border border-base-300 shadow-sm">
-      <div class="card-body items-center text-center">
-        <h3 class="card-title">No se encontraron canciones</h3>
-        <% if params[:q].present? %>
-          <p class="text-sm opacity-70">Intenta ajustar tu búsqueda.</p>
-          <%= link_to 'Limpiar búsqueda', app_path, class: 'btn btn-sm mt-2' %>
-        <% else %>
-          <p class="text-sm opacity-70">Aún no hay canciones.</p>
-        <% end %>
-      </div>
-    </div>
+  <div class="flex flex-col w-full gap-10 mt-3">
+    <% grouped_songs.sort.each do |letter, songs| %>
+      <%= render 'songs/letter_group', letter: letter, songs: songs %>
+    <% end %>
   </div>
+<% else %>
+  <%= render 'songs/no_songs' %>
 <% end %>
