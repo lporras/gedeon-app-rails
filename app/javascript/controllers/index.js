@@ -8,11 +8,13 @@ const application = Application.start();
 
 // Import and register all controllers here
 import LetterNavController from "./letter_nav_controller";
+import ThemeController from "./theme_controller";
 
 // Configure Stimulus development experience
 application.debug = process.env.NODE_ENV === 'development';
 
 // Register controllers
 application.register("letter-nav", LetterNavController);
+application.register("theme", ThemeController);
 
 export default application;

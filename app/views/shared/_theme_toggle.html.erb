@@ -1,10 +1,11 @@
-<div class="flex justify-end p-4">
+<div class="flex justify-end p-4" data-controller="theme">
   <label class="flex items-center gap-2 cursor-pointer">
     <span class="text-sm">Dark Mode</span>
     <input 
       type="checkbox" 
       class="theme-toggle" 
-      data-theme-controller="true"
+      data-theme-target="toggle"
+      data-action="change->theme#toggle"
     />
   </label>
 </div>
