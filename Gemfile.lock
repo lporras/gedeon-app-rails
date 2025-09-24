@@ -421,7 +421,7 @@ GEM
     websocket-extensions (0.1.5)
     wicked_pdf (2.6.3)
       activesupport
-    wkhtmltopdf-binary-edge (0.12.6.0)
+    wkhtmltopdf-binary (0.12.6.10)
     xdan-datetimepicker-rails (2.5.4)
       jquery-rails
       rails (>= 3.2.16)
@@ -491,7 +491,7 @@ DEPENDENCIES
   video_player
   web-console (>= 3.3.0)
   wicked_pdf
-  wkhtmltopdf-binary-edge
+  wkhtmltopdf-binary
 
 RUBY VERSION
    ruby 3.2.9p265

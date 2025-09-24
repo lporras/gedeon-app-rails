@@ -79,7 +79,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 4.0.0'
   gem "pry"
   gem "pry-remote"
-  gem 'wkhtmltopdf-binary-edge'
+  gem 'wkhtmltopdf-binary'
 end
 
 group :development do
