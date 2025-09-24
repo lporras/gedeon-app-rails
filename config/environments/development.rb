@@ -58,4 +58,12 @@ Rails.application.configure do
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
+
+  # Allow testing subdomains locally (e.g., ici-santiago.localhost:3000)
+  config.hosts ||= []
+  config.hosts << /.+\.localhost/
+  config.hosts << /.+\.lvh\.me/
+  # Allow ngrok tunnels (both legacy and new domains)
+  config.hosts << /.+\.ngrok\.io/
+  config.hosts << /.+\.ngrok-free\.app/
 end

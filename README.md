@@ -1,5 +1,8 @@
 # README
 
+[![Github Actions][actions_badge]][actions]
+[![Coverage][coverage_badge]][coverage]
+
 This README would normally document whatever steps are necessary to get the
 application up and running.
 
@@ -50,3 +53,9 @@ Things you may want to cover:
   docker compose run --rm web bundle exec rails db:prepare
   docker compose run --rm web bundle exec rails db:seed
   ```
+
+[actions_badge]: https://github.com/ICI-Cancionero/gedeon-app-rails/actions/workflows/ruby.yml/badge.svg?branch=master
+[actions]: https://github.com/ICI-Cancionero/gedeon-app-rails/actions/workflows/ruby.yml
+
+[coverage_badge]: https://codecov.io/gh/ICI-Cancionero/gedeon-app-rails/branch/master/graph/badge.svg
+[coverage]: https://codecov.io/gh/ICI-Cancionero/gedeon-app-rails

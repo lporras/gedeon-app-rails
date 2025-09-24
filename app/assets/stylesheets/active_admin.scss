@@ -31,6 +31,14 @@ $panelHeaderBck: black;
   font-weight: bold;
 }
 
+// Ensure the ActiveAdmin header logo (site_title_image) is 50px tall
+#header h1.site_title img {
+  height: 30px;
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
+}
+
 li.select2-selection__choice{
   display: inline;
 }

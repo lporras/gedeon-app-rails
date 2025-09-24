@@ -34,6 +34,13 @@ module GedeonAppRails
       env.export_concurrent = false
     end
 
+    # Rails 7: opt-in to the new connection handling to silence deprecation
+    # and ensure compatibility with multiple databases behavior.
+    config.active_record.legacy_connection_handling = false
+
+    # Use URL-safe CSRF tokens (Rails 6.1+ behavior) to silence deprecation
+    config.action_controller.urlsafe_csrf_tokens = true
+
     config.hosts = nil
   end
 end

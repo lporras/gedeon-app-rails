@@ -13,4 +13,15 @@ Rails.application.config.assets.paths << Rails.root.join('app', 'assets', 'build
 # Precompile additional assets.
 # application.js, application.css, and all non-JS/CSS in the app/assets
 # folder are already added.
-Rails.application.config.assets.precompile += %w( application.css default_logo.jpeg pdf.css revealjs.js stimulus.js revealjs.css ckeditor/config.js ckeditor/plugins/chat-gpt/plugin.js)
+Rails.application.config.assets.precompile += %w(
+  application.css
+  default_logo.jpeg
+  pdf.css
+  revealjs.js
+  stimulus.js
+  revealjs.css
+  ckeditor/application.js
+  ckeditor/application.css
+  ckeditor/config.js
+  ckeditor/plugins/chat-gpt/plugin.js
+)

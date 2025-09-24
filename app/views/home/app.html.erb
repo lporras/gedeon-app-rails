@@ -1,38 +1,36 @@
-<div class="flex flex-col w-full" data-controller="main">
-  <%= search_form_for @q, url: app_url do |f| %>
-    <%= f.search_field :title_or_content_cont,
-      placeholder: "Buscar canción por título o letra",
-      class: "input input-bordered w-full max-w-xs",
-      type: "text"
-    %>
-    <%= f.submit "Búscar", class: "btn btn-neutral" %>
-  <% end %>
+<%= render 'shared/theme_toggle' %>
+<%# search form moved below the fixed A–Z bar spacer %>
+
+<%# Install banner - uses Stimulus controller for PWA installation %>
+<%= render 'shared/install_banner' %>
+
+<%# Page header with church/account name (scrolls away) %>
+<div class="max-w-screen-lg px-2 mb-2">
+  <% account_name = ActsAsTenant.current_tenant&.name || 'Tu Iglesia' %>
+  <div>
+    <div class="py-3">
+      <h1 class="text-xl sm:text-2xl font-extrabold">
+        Canciones de la Iglesia <span class="text-primary"><%= account_name %></span>
+      </h1>
+    </div>
+  </div>
 </div>
 
+<%# Sticky A–Z index and search (remains visible) %>
+<div class="sticky top-0 left-0 right-0 z-40 bg-base-100/95 backdrop-blur border-b border-base-300">
+  <!-- Letters navigation partial -->
+  <%= render 'songs/letters_nav', letters: grouped_songs.keys.sort %>
+  <!-- Search form partial -->
+  <%= render 'shared/search_form', q: @q %>
+</div>
 <div class="divider"></div>
 
-<div class="flex flex-col w-full overflow-x-auto">
-  <table class="table table-pin-rows">
-  <%- grouped_songs.each_pair do |letter, songs|%>
-    <thead>
-      <tr>
-        <th><span class="font-bold font-black text-blue-600"><%= letter %></span></th>
-      </tr>
-    </thead>
-    <tbody>
-      <%- songs.each do |song|%>
-        <tr class="card card-compact">
-          <td><span class="font-bold font-black text-blue-400"><%= song.title %></span></td>
-        </tr>
-        <tr>
-          <td class="card card-compact">
-            <article class="prose">
-              <%= simple_format song.content %>
-            </article>
-          </td>
-        </tr>
-      <%- end %>
-    </tbody>
-  <%- end %>
-  </table>
-</div>
+<% if @songs.any? %>
+  <div class="flex flex-col w-full gap-10 mt-3">
+    <% grouped_songs.sort.each do |letter, songs| %>
+      <%= render 'songs/letter_group', letter: letter, songs: songs %>
+    <% end %>
+  </div>
+<% else %>
+  <%= render 'songs/no_songs' %>
+<% end %>

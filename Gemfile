@@ -68,6 +68,7 @@ gem 'ckeditor', github: 'galetahub/ckeditor'
 gem 'carrierwave'
 gem 'carrierwave-aws'
 gem 'mini_magick'
+gem 'jquery-rails', '~> 4.5.1'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -78,7 +79,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 4.0.0'
   gem "pry"
   gem "pry-remote"
-  gem 'wkhtmltopdf-binary-edge'
+  gem 'wkhtmltopdf-binary'
 end
 
 group :development do
@@ -92,6 +93,7 @@ group :test do
   gem 'rspec', '~> 3.0'
   gem 'shoulda-matchers', '~> 5.0'
   gem 'database_cleaner-active_record'
+  gem 'simplecov', require: false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

@@ -22,12 +22,19 @@ jobs:
 
     services:
       postgres:
-        image: postgres:10
+        image: postgres:17
         env:
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgres
+          POSTGRES_DB: holymusic_app_rails_test
         ports:
         - 5432:5432
+        # Wait for the database to be ready before running steps
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     strategy:
       matrix:
@@ -58,9 +65,16 @@ jobs:
       - name: Prepare DB
         env:
           RAILS_ENV: test
+          DATABASE_URL: 'postgres://postgres:postgres@127.0.0.1:5432/holymusic_app_rails_test'
+          PGHOST: 127.0.0.1
+          PGUSER: postgres
+          PGPASSWORD: postgres
+          PGDATABASE: holymusic_app_rails_test
         run: |
-          bundle exec rake db:create
-          bundle exec rake db:test:prepare
+          bundle exec rails db:prepare
+
+      - name: Install Node dependencies
+        run: yarn install --frozen-lockfile
 
       - name: Build Esbuild
         run: yarn build
@@ -68,4 +82,25 @@ jobs:
       - name: Run tests
         env:
           RAILS_ENV: test
+          DATABASE_URL: 'postgres://postgres:postgres@127.0.0.1:5432/holymusic_app_rails_test'
+          PGHOST: 127.0.0.1
+          PGUSER: postgres
+          PGPASSWORD: postgres
+          PGDATABASE: holymusic_app_rails_test
         run: bundle exec rspec spec
+
+      - name: Upload coverage to Codecov
+        if: always()
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: true
+          verbose: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/.resultset.json
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/

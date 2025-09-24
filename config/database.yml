@@ -33,6 +33,12 @@ development:
 
 test:
   <<: *default
+  # Prefer DATABASE_URL when provided (CI)
+  url: <%= ENV['DATABASE_URL'] %>
+  # Fallbacks if no DATABASE_URL
+  host: <%= ENV.fetch('POSTGRES_HOST', 'localhost') %>
+  username: <%= ENV.fetch('DB_USERNAME') { ENV.fetch('POSTGRES_USER', 'postgres') } %>
+  password: <%= ENV.fetch('DB_PASS') { ENV.fetch('POSTGRES_PASSWORD', 'postgres') } %>
   database: holymusic_app_rails_test
 
 production:

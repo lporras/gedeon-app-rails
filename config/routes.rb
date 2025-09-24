@@ -8,6 +8,8 @@ Rails.application.routes.draw do
 
   root to: "home#show"
   get :app, to: "home#app"
+  # PWA manifest per subdomain, scoped to /app/
+  get "/app/manifest.webmanifest", to: "manifests#show"
 
   api_version(module: 'api/v1', path: { value: 'api/v1' }, defaults: { format: :json }) do
     resources :songs, only: [:show, :index]
