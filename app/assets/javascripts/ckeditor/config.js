@@ -59,4 +59,7 @@ CKEDITOR.editorConfig = function( config )
 
   config.extraPlugins = 'chat-gpt,';
   config.apiKey = window.OVERRIDE_API_KEY;
+  
+  // Disable version notification
+  config.versionCheck = false;
 };
