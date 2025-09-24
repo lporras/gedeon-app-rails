@@ -8,7 +8,7 @@ application up and running.
 
 Things you may want to cover:
 
-* Ruby version: 3.2.1
+* Ruby version: 3.2.9
 
 * System dependencies:
   - Docker (Compose v2)
