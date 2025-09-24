@@ -3,7 +3,7 @@ require 'bible_parser'
 ActiveAdmin.register Scripture do
   menu priority: 5
 
-  permit_params :book_id, :chapter_num, :content, :from, :to
+  permit_params :book_id, :chapter_num, :content, :from, :to, :bible_version, :playlist_section_id
 
   form partial: 'form'
 
