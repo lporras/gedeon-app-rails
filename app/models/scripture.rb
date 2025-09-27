@@ -36,7 +36,7 @@ class Scripture < ApplicationRecord
   end
 
   def self.bible_versions
-    ["NVI", "RVR09", "RVR1960"]
+    ["NVI", "RVR1960"]
   end
 
   def self.open_bible_files
@@ -56,7 +56,6 @@ class Scripture < ApplicationRecord
   end
 
   def bible
-    bible_path = Scripture.open_bible_file_path(self.bible_version)
-    @bible = BibleParser.new(File.open(bible_path))
+    @bible = SimpleBibleLoader.load_bible(self.bible_version)
   end
 end
