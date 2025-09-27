@@ -1,19 +1,4 @@
 GIT
-  remote: https://github.com/activeadmin/activeadmin.git
-  revision: 04c9c93a5c976dff62524d144d45211df26bbe9c
-  branch: master
-  specs:
-    activeadmin (2.13.1)
-      arbre (~> 1.2, >= 1.2.1)
-      formtastic (>= 3.1, < 5.0)
-      formtastic_i18n (~> 0.4)
-      inherited_resources (~> 1.7)
-      jquery-rails (~> 4.2)
-      kaminari (~> 1.0, >= 1.2.1)
-      railties (>= 6.1, < 7.1)
-      ransack (>= 2.1.1, < 4)
-
-GIT
   remote: https://github.com/galetahub/ckeditor.git
   revision: 8200ccdbf789669d154b800aab329db8f46aabdc
   specs:
@@ -75,6 +60,15 @@ GEM
       case_transform (>= 0.2)
       jsonapi-renderer (>= 0.1.1.beta1, < 0.3)
     active_skin (0.0.13)
+    activeadmin (2.13.1)
+      arbre (~> 1.2, >= 1.2.1)
+      formtastic (>= 3.1, < 5.0)
+      formtastic_i18n (~> 0.4)
+      inherited_resources (~> 1.7)
+      jquery-rails (~> 4.2)
+      kaminari (~> 1.0, >= 1.2.1)
+      railties (>= 6.1, < 7.1)
+      ransack (>= 2.1.1, < 4)
     activeadmin_addons (1.9.0)
       active_material
       railties
@@ -435,63 +429,63 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers (= 0.10.13)
-  active_skin
-  activeadmin!
+  active_skin (= 0.0.13)
+  activeadmin (~> 2.13.1)
   activeadmin_addons (= 1.9.0)
-  acts_as_tenant
-  annotate
-  bible_parser
+  acts_as_tenant (= 1.0.1)
+  annotate (= 3.2.0)
+  bible_parser (= 1.1.1)
   bootsnap (= 1.12.0)
-  byebug
-  carrierwave
-  carrierwave-aws
+  byebug (= 11.1.3)
+  carrierwave (= 3.0.7)
+  carrierwave-aws (= 1.6.0)
   ckeditor!
   coffee-rails (~> 4.2)
-  database_cleaner-active_record
+  database_cleaner-active_record (= 2.1.0)
   devise (= 4.8.1)
-  dotenv-rails
-  factory_bot_rails
-  faker
+  dotenv-rails (= 2.8.1)
+  factory_bot_rails (= 6.2.0)
+  faker (= 3.2.0)
   ffi (~> 1.16)
   formtastic (= 4.0.0.rc1)
   inherited_resources (= 1.13.1)
   jbuilder (~> 2.5)
   jquery-rails (~> 4.5.1)
-  jsbundling-rails
+  jsbundling-rails (= 1.1.2)
   listen (= 3.7.1)
   mimemagic (= 0.3.10)
-  mini_magick
-  net-imap
-  net-pop
-  net-smtp
-  newrelic_rpm
+  mini_magick (= 4.12.0)
+  net-imap (= 0.3.6)
+  net-pop (= 0.1.2)
+  net-smtp (= 0.3.3)
+  newrelic_rpm (= 9.2.2)
   nokogiri (~> 1.14)
   pg (>= 1.5)
-  pry
-  pry-remote
+  pry (= 0.14.2)
+  pry-remote (= 0.1.8)
   puma (~> 4.3)
-  quiet_safari
-  rack
+  quiet_safari (= 1.0.0)
+  rack (= 2.2.7)
   rails (~> 7.0.5)
-  ransack
+  ransack (= 3.2.1)
   redis (~> 4.0)
-  rollbar
+  rollbar (= 3.4.0)
   rspec (~> 3.0)
   rspec-rails (~> 4.0.0)
-  rswag
+  rswag (= 2.9.0)
   sass-rails (~> 6.0.0)
   shoulda-matchers (~> 5.0)
-  simplecov
+  simplecov (= 0.22.0)
   tailwindcss-rails (~> 2.0)
   thor (= 1.2.1)
-  turbo-rails
+  turbo-rails (= 1.4.0)
   tzinfo-data
   uglifier (>= 1.3.0)
-  versionist
-  video_player
+  versionist (= 2.0.1)
+  video_player (= 1.0.0)
   web-console (>= 3.3.0)
-  wicked_pdf
-  wkhtmltopdf-binary
+  wicked_pdf (= 2.6.3)
+  wkhtmltopdf-binary (= 0.12.6.10)
 
 RUBY VERSION
    ruby 3.2.9p265
