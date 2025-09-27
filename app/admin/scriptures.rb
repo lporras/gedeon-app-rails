@@ -1,5 +1,3 @@
-require 'bible_parser'
-
 ActiveAdmin.register Scripture do
   menu priority: 5
 
@@ -35,14 +33,12 @@ ActiveAdmin.register Scripture do
 
     def set_bible
       params[:bible_version] ||= "NVI"
-      bible_path = Scripture.open_bible_file_path(params[:bible_version])
-      @bible = BibleParser.new(File.open(bible_path))
+      @bible = SimpleBibleLoader.load_bible(params[:bible_version])
     end
 
     def set_bible_from_scripture
       params[:bible_version] = resource.bible_version
-      bible_path = Scripture.open_bible_file_path(params[:bible_version])
-      @bible = BibleParser.new(File.open(bible_path))
+      @bible = SimpleBibleLoader.load_bible(params[:bible_version])
     end
 
     def scoped_collection
