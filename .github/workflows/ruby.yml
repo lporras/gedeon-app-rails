@@ -69,7 +69,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build Tailwind CSS
-        run: bin/build-tailwind
+        run: yarn tailwindcss -i app/assets/stylesheets/application.tailwind.css -o app/assets/builds/tailwind.css --minify
 
       - name: Build Esbuild
         run: yarn build
