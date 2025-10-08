@@ -26,17 +26,6 @@ RSpec.describe "Api::V1::Songs", type: :request do
         expect(json_response.second["title"]).to eq("Blessed Assurance")
       end
 
-      it "includes video_links in the serialized response" do
-        get "/api/v1/songs"
-
-        json_response = JSON.parse(response.body)
-        song_with_video = json_response.find { |s| s["id"] == song1.id }
-
-        expect(song_with_video["video_links"]).to be_present
-        expect(song_with_video["video_links"].length).to eq(1)
-        expect(song_with_video["video_links"].first["url"]).to eq("https://youtube.com/watch?v=123")
-      end
-
       context "SongSerializer coverage" do
         it "serializes all song attributes correctly" do
           get "/api/v1/songs"
@@ -72,6 +61,7 @@ RSpec.describe "Api::V1::Songs", type: :request do
 
           expect(video_link_json["id"]).to eq(video_link1.id)
           expect(video_link_json["url"]).to eq(video_link1.url)
+          expect(song_with_video["video_links"].length).to eq(1)
         end
       end
     end
@@ -106,16 +96,6 @@ RSpec.describe "Api::V1::Songs", type: :request do
       expect(json_response["content"]).to eq("Test content")
     end
 
-    it "includes video_links in the response" do
-      get "/api/v1/songs/#{song.id}"
-
-      json_response = JSON.parse(response.body)
-
-      expect(json_response["video_links"]).to be_present
-      expect(json_response["video_links"].length).to eq(1)
-      expect(json_response["video_links"].first["url"]).to eq("https://youtube.com/watch?v=abc")
-    end
-
     it "raises error when song does not exist" do
       expect {
         get "/api/v1/songs/99999"
@@ -141,6 +121,8 @@ RSpec.describe "Api::V1::Songs", type: :request do
         expect(json_response["title"]).to eq(song.title)
         expect(json_response["content"]).to eq(song.content)
         expect(json_response["position"]).to eq(song.position)
+        expect(json_response["video_links"]).to be_present
+        expect(json_response["video_links"].length).to eq(1)
       end
     end
   end

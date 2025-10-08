@@ -46,20 +46,6 @@ RSpec.describe "Api::V1::Playlists", type: :request do
         expect(playlist_ids).not_to include(inactive_playlist.id)
       end
 
-      it "includes nested playlist_sections and playlist_items" do
-        get "/api/v1/playlists"
-
-        json_response = JSON.parse(response.body)
-        playlist_with_sections = json_response.find { |p| p["id"] == active_playlist1.id }
-
-        expect(playlist_with_sections["playlist_sections"]).to be_present
-        expect(playlist_with_sections["playlist_sections"].length).to eq(2)
-
-        first_section = playlist_with_sections["playlist_sections"].first
-        expect(first_section["playlist_items"]).to be_present
-        expect(first_section["name"]).to eq("Opening")
-      end
-
       context "PlaylistSerializer coverage" do
         it "serializes all playlist attributes correctly" do
           get "/api/v1/playlists"
@@ -91,6 +77,7 @@ RSpec.describe "Api::V1::Playlists", type: :request do
           expect(section_json).to have_key("playlist_items")
 
           expect(section_json["name"]).to eq("Opening")
+          expect(playlist_json["playlist_sections"].length).to eq(2)
         end
 
         it "serializes playlist_items with PlaylistItemSerializer" do
@@ -148,16 +135,6 @@ RSpec.describe "Api::V1::Playlists", type: :request do
       expect(json_response["name"]).to eq("Test Playlist")
     end
 
-    it "includes nested playlist_sections" do
-      get "/api/v1/playlists/#{playlist.id}"
-
-      json_response = JSON.parse(response.body)
-
-      expect(json_response["playlist_sections"]).to be_present
-      expect(json_response["playlist_sections"].length).to eq(1)
-      expect(json_response["playlist_sections"].first["name"]).to eq("Section 1")
-    end
-
     it "includes nested playlist_sections but not deeply nested items in show action" do
       get "/api/v1/playlists/#{playlist.id}"
 
@@ -168,6 +145,7 @@ RSpec.describe "Api::V1::Playlists", type: :request do
       # This is different from the index action which specifies explicit includes
       expect(section_json).to be_present
       expect(section_json["name"]).to eq("Section 1")
+      expect(json_response["playlist_sections"].length).to eq(1)
     end
 
     it "raises error when playlist does not exist" do
@@ -299,32 +277,6 @@ RSpec.describe "Api::V1::Playlists", type: :request do
       expect(section2_json).to be_present
       expect(section1_json["name"]).to eq("Opening Songs")
       expect(section2_json["name"]).to eq("Worship Time")
-    end
-  end
-
-  describe "playlist includes parameter" do
-    let!(:playlist) do
-      ActsAsTenant.with_tenant(account) { create(:playlist, name: "Include Test", active: true) }
-    end
-
-    let!(:section) do
-      ActsAsTenant.with_tenant(account) { create(:playlist_section, playlist: playlist, name: "Test Section") }
-    end
-    let!(:song) { ActsAsTenant.with_tenant(account) { create(:song, title: "Test Song") } }
-    let!(:playlist_item) do
-      ActsAsTenant.with_tenant(account) { create(:playlist_item, playlist_section: section, song: song, position: 1) }
-    end
-
-    it "properly includes nested associations as specified by controller" do
-      get "/api/v1/playlists"
-
-      json_response = JSON.parse(response.body)
-      playlist_json = json_response.find { |p| p["id"] == playlist.id }
-
-      # The controller specifies: include: "playlist_sections,playlist_sections.playlist_items"
-      expect(playlist_json["playlist_sections"]).to be_present
-      expect(playlist_json["playlist_sections"].first["playlist_items"]).to be_present
-      expect(playlist_json["playlist_sections"].first["playlist_items"].first["song"]).to be_present
     end
   end
 end
