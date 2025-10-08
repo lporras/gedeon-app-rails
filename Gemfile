@@ -17,7 +17,6 @@ gem 'uglifier', '>= 1.3.0'
 # gem 'mini_racer', platforms: :ruby
 gem 'jsbundling-rails', '1.1.2'
 gem 'turbo-rails', '1.4.0'
-gem "tailwindcss-rails", "~> 2.0"
 
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'
