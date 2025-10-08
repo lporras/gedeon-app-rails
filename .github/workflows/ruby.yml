@@ -68,10 +68,7 @@ jobs:
       - name: Install Node dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Build Tailwind CSS
-        run: yarn tailwindcss -i app/assets/stylesheets/application.tailwind.css -o app/assets/builds/tailwind.css --minify
-
-      - name: Build Esbuild
+      - name: Build assets
         run: yarn build
 
       - name: Run tests
