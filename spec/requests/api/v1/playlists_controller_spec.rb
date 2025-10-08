@@ -17,18 +17,21 @@ RSpec.describe "Api::V1::Playlists", type: :request do
         ActsAsTenant.with_tenant(account) { create(:playlist, name: "Old Playlist", active: false) }
       end
 
-      before do
-        ActsAsTenant.with_tenant(account) do
-          # Create playlist sections and items for active_playlist1
-          section1 = create(:playlist_section, playlist: active_playlist1, name: "Opening")
-          section2 = create(:playlist_section, playlist: active_playlist1, name: "Main")
+      let!(:section1) do
+        ActsAsTenant.with_tenant(account) { create(:playlist_section, playlist: active_playlist1, name: "Opening") }
+      end
+      let!(:section2) do
+        ActsAsTenant.with_tenant(account) { create(:playlist_section, playlist: active_playlist1, name: "Main") }
+      end
 
-          song1 = create(:song, title: "Song 1")
-          song2 = create(:song, title: "Song 2")
+      let!(:song1) { ActsAsTenant.with_tenant(account) { create(:song, title: "Song 1") } }
+      let!(:song2) { ActsAsTenant.with_tenant(account) { create(:song, title: "Song 2") } }
 
-          create(:playlist_item, playlist_section: section1, song: song1, position: 1)
-          create(:playlist_item, playlist_section: section2, song: song2, position: 2)
-        end
+      let!(:playlist_item1) do
+        ActsAsTenant.with_tenant(account) { create(:playlist_item, playlist_section: section1, song: song1, position: 1) }
+      end
+      let!(:playlist_item2) do
+        ActsAsTenant.with_tenant(account) { create(:playlist_item, playlist_section: section2, song: song2, position: 2) }
       end
 
       it "returns only active playlists from the default tenant" do
@@ -238,22 +241,29 @@ RSpec.describe "Api::V1::Playlists", type: :request do
       ActsAsTenant.with_tenant(account) { create(:playlist, name: "Complex Playlist", active: true) }
     end
 
-    before do
-      ActsAsTenant.with_tenant(account) do
-        # Create multiple sections with multiple items each
-        section1 = create(:playlist_section, playlist: playlist, name: "Opening Songs")
-        section2 = create(:playlist_section, playlist: playlist, name: "Worship Time")
+    let!(:section1) do
+      ActsAsTenant.with_tenant(account) { create(:playlist_section, playlist: playlist, name: "Opening Songs") }
+    end
+    let!(:section2) do
+      ActsAsTenant.with_tenant(account) { create(:playlist_section, playlist: playlist, name: "Worship Time") }
+    end
 
-        song1 = create(:song, title: "Song 1")
-        song2 = create(:song, title: "Song 2")
-        song3 = create(:song, title: "Song 3")
-        song4 = create(:song, title: "Song 4")
+    let!(:song1) { ActsAsTenant.with_tenant(account) { create(:song, title: "Song 1") } }
+    let!(:song2) { ActsAsTenant.with_tenant(account) { create(:song, title: "Song 2") } }
+    let!(:song3) { ActsAsTenant.with_tenant(account) { create(:song, title: "Song 3") } }
+    let!(:song4) { ActsAsTenant.with_tenant(account) { create(:song, title: "Song 4") } }
 
-        create(:playlist_item, playlist_section: section1, song: song1, position: 1)
-        create(:playlist_item, playlist_section: section1, song: song2, position: 2)
-        create(:playlist_item, playlist_section: section2, song: song3, position: 1)
-        create(:playlist_item, playlist_section: section2, song: song4, position: 2)
-      end
+    let!(:playlist_item1) do
+      ActsAsTenant.with_tenant(account) { create(:playlist_item, playlist_section: section1, song: song1, position: 1) }
+    end
+    let!(:playlist_item2) do
+      ActsAsTenant.with_tenant(account) { create(:playlist_item, playlist_section: section1, song: song2, position: 2) }
+    end
+    let!(:playlist_item3) do
+      ActsAsTenant.with_tenant(account) { create(:playlist_item, playlist_section: section2, song: song3, position: 1) }
+    end
+    let!(:playlist_item4) do
+      ActsAsTenant.with_tenant(account) { create(:playlist_item, playlist_section: section2, song: song4, position: 2) }
     end
 
     it "properly serializes complex nested structures in index" do
@@ -297,12 +307,12 @@ RSpec.describe "Api::V1::Playlists", type: :request do
       ActsAsTenant.with_tenant(account) { create(:playlist, name: "Include Test", active: true) }
     end
 
-    before do
-      ActsAsTenant.with_tenant(account) do
-        section = create(:playlist_section, playlist: playlist, name: "Test Section")
-        song = create(:song, title: "Test Song")
-        create(:playlist_item, playlist_section: section, song: song, position: 1)
-      end
+    let!(:section) do
+      ActsAsTenant.with_tenant(account) { create(:playlist_section, playlist: playlist, name: "Test Section") }
+    end
+    let!(:song) { ActsAsTenant.with_tenant(account) { create(:song, title: "Test Song") } }
+    let!(:playlist_item) do
+      ActsAsTenant.with_tenant(account) { create(:playlist_item, playlist_section: section, song: song, position: 1) }
     end
 
     it "properly includes nested associations as specified by controller" do

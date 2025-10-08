@@ -11,10 +11,8 @@ RSpec.describe "Api::V1::Songs", type: :request do
       let!(:song2) { ActsAsTenant.with_tenant(account) { create(:song, title: "Blessed Assurance") } }
       let!(:video_link1) { ActsAsTenant.with_tenant(account) { create(:video_link, url: "https://youtube.com/watch?v=123") } }
 
-      before do
-        ActsAsTenant.with_tenant(account) do
-          song1.video_links << video_link1
-        end
+      let!(:song1_video_association) do
+        ActsAsTenant.with_tenant(account) { song1.video_links << video_link1 }
       end
 
       it "returns all songs from the default tenant ordered by title" do
@@ -93,10 +91,8 @@ RSpec.describe "Api::V1::Songs", type: :request do
     let!(:song) { ActsAsTenant.with_tenant(account) { create(:song, title: "Test Song", content: "Test content") } }
     let!(:video_link) { ActsAsTenant.with_tenant(account) { create(:video_link, url: "https://youtube.com/watch?v=abc") } }
 
-    before do
-      ActsAsTenant.with_tenant(account) do
-        song.video_links << video_link
-      end
+    let!(:song_video_association) do
+      ActsAsTenant.with_tenant(account) { song.video_links << video_link }
     end
 
     it "returns the requested song from the default tenant" do
@@ -176,7 +172,7 @@ RSpec.describe "Api::V1::Songs", type: :request do
     let!(:video1) { ActsAsTenant.with_tenant(account) { create(:video_link, url: "https://youtube.com/watch?v=abc") } }
     let!(:video2) { ActsAsTenant.with_tenant(account) { create(:video_link, url: "https://youtube.com/watch?v=def") } }
 
-    before do
+    let!(:song_videos_association) do
       ActsAsTenant.with_tenant(account) do
         song.video_links << video1
         song.video_links << video2
