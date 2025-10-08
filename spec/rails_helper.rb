@@ -10,6 +10,10 @@ require 'rspec/rails'
 require 'capybara/rails'
 require 'capybara/rspec'
 
+# Configure Rails to serve precompiled assets in tests
+Rails.application.config.assets.compile = false
+Rails.application.config.assets.check_precompiled_asset = false
+
 # Configure Capybara to handle subdomains
 Capybara.app_host = 'http://lvh.me'
 Capybara.server_host = 'lvh.me'
