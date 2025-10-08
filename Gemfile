@@ -88,6 +88,7 @@ group :development do
 end
 
 group :test do
+  gem "capybara"
   gem 'rspec', '~> 3.0'
   gem 'shoulda-matchers', '~> 5.0'
   gem 'database_cleaner-active_record', '2.1.0'

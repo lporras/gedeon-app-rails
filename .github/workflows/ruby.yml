@@ -68,7 +68,7 @@ jobs:
       - name: Install Node dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Build Esbuild
+      - name: Build assets
         run: yarn build
 
       - name: Run tests

@@ -7,6 +7,18 @@ require File.expand_path('../config/environment', __dir__)
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
+require 'capybara/rails'
+require 'capybara/rspec'
+
+# Configure Rails to serve precompiled assets in tests
+Rails.application.config.assets.compile = false
+Rails.application.config.assets.check_precompiled_asset = false
+
+# Configure Capybara to handle subdomains
+Capybara.app_host = 'http://lvh.me'
+Capybara.server_host = 'lvh.me'
+Capybara.server_port = 3000
+
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -74,6 +86,7 @@ end
 
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
+  config.include Warden::Test::Helpers
 
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
