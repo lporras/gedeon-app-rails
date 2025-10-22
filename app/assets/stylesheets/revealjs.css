@@ -1,3 +1,6 @@
-@import 'revealjs/reset.css';
-@import 'revealjs/reveal.css';
-@import 'revealjs/theme/black.css';
+/*
+ *= require revealjs/reset
+ *= require revealjs/reveal
+ *= require revealjs/theme/source-sans-pro
+ *= require revealjs/theme/black
+ */
