@@ -20,6 +20,8 @@
 require 'rails_helper'
 
 RSpec.describe Playlist, type: :model do
+  it_behaves_like "acts_as_tenant model"
+
   it { should have_many(:playlist_items) }
   it { should have_many(:playlist_sections) }
   it { should have_many(:songs).order(created_at: :asc) }

@@ -21,5 +21,5 @@
 require 'rails_helper'
 
 RSpec.describe Study, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it_behaves_like "acts_as_tenant model"
 end

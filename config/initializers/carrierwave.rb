@@ -1,11 +1,9 @@
 CarrierWave.configure do |config|
-  # In test and development we store files locally and avoid requiring
-  # any AWS/S3 environment variables. This prevents CI from failing due to
-  # missing secrets and speeds up tests.
-  if Rails.env.test? || Rails.env.development?
+  # Use file storage only in test environment to speed up tests
+  if Rails.env.test?
     config.storage = :file
     # Disable processing in tests for faster runs
-    config.enable_processing = false if Rails.env.test?
+    config.enable_processing = false
   else
     # Production/staging: use AWS S3
     config.storage    = :aws
