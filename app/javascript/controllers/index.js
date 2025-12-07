@@ -10,6 +10,7 @@ const application = Application.start();
 import LetterNavController from "./letter_nav_controller";
 import ThemeController from "./theme_controller";
 import InstallBannerController from "./install_banner_controller";
+import ChordproPreviewController from "./chordpro_preview_controller";
 
 // Configure Stimulus development experience
 application.debug = process.env.NODE_ENV === 'development';
@@ -18,5 +19,6 @@ application.debug = process.env.NODE_ENV === 'development';
 application.register("letter-nav", LetterNavController);
 application.register("theme", ThemeController);
 application.register("install-banner", InstallBannerController);
+application.register("chordpro-preview", ChordproPreviewController);
 
 export default application;

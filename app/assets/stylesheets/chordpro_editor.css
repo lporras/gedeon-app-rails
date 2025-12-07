@@ -1,0 +1,137 @@
+/* ChordPro Editor Layout and Styling */
+
+.chordpro-editor-container {
+  width: 100%;
+  margin: 20px 0;
+}
+
+/* Two-column layout for editor and preview */
+.chordpro-editor-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* Textarea wrapper and styling */
+.chordpro-textarea-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.chordpro-textarea-wrapper label {
+  font-weight: bold;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #333;
+}
+
+.chordpro-textarea-wrapper textarea {
+  width: 100%;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  min-height: 400px;
+  background: #fff;
+}
+
+.chordpro-textarea-wrapper textarea:focus {
+  outline: none;
+  border-color: #5b9dd9;
+  box-shadow: 0 0 0 1px #5b9dd9;
+}
+
+/* Preview wrapper and panel */
+.chordpro-preview-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.chordpro-preview-wrapper h4 {
+  font-weight: bold;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #333;
+}
+
+.chordpro-preview-panel {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 20px;
+  min-height: 400px;
+  max-height: 600px;
+  overflow-y: auto;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.chordpro-preview-panel #charter-container {
+  max-width: 800px;
+  width: 100%;
+}
+
+.chordpro-preview-panel .placeholder-text {
+  color: #999;
+  font-style: italic;
+  text-align: center;
+  width: 100%;
+}
+
+/* Error display */
+.chordpro-error {
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+.chordpro-error.hidden {
+  display: none;
+}
+
+/* Show page preview styling */
+.chordpro-show-preview {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 20px;
+  min-height: 200px;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  display: flex;
+  align-items: flex-start;
+}
+
+.chordpro-show-preview #charter-container {
+  max-width: 800px;
+  width: 100%;
+}
+
+/* Responsive layout - stack on smaller screens */
+@media (max-width: 1024px) {
+  .chordpro-editor-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .chordpro-preview-panel {
+    max-height: 400px;
+  }
+}
+
+/* ActiveAdmin specific adjustments */
+.active_admin .chordpro-editor-section {
+  margin-top: 20px;
+}
+
+.active_admin .chordpro-editor-section fieldset {
+  padding: 20px;
+}

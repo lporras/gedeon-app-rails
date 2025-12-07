@@ -2,14 +2,15 @@
 #
 # Table name: songs
 #
-#  id         :bigint           not null, primary key
-#  author     :string
-#  content    :text
-#  position   :integer
-#  title      :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  account_id :bigint
+#  id               :bigint           not null, primary key
+#  author           :string
+#  chordpro_content :text
+#  content          :text
+#  position         :integer
+#  title            :string
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  account_id       :bigint
 #
 # Indexes
 #

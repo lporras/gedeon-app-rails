@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_23_182442) do
+ActiveRecord::Schema[7.0].define(version: 2025_12_06_185557) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -118,6 +118,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_23_182442) do
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "account_id"
     t.string "author"
+    t.text "chordpro_content"
     t.index ["account_id"], name: "index_songs_on_account_id"
   end
 

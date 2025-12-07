@@ -1,0 +1,143 @@
+/* Charter ChordPro Rendering Styles */
+/* Based on charter's actual styles.css */
+
+/* Namespace all styles within preview panels */
+.chordpro-preview-panel #charter-container,
+.chordpro-show-preview #charter-container {
+  position: relative;
+  overflow: hidden;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 9pt;
+}
+
+.chordpro-preview-panel .charter-song-header,
+.chordpro-show-preview .charter-song-header {
+  background-color: #ffffff;
+  overflow: visible;
+  width: 100%;
+}
+
+.chordpro-preview-panel .charter-title-wrapper,
+.chordpro-show-preview .charter-title-wrapper {
+  line-height: 1.2;
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+.chordpro-preview-panel .charter-title,
+.chordpro-show-preview .charter-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  display: inline-block;
+  white-space: normal;
+  width: 75%;
+}
+
+.chordpro-preview-panel .charter-artist-wrapper,
+.chordpro-show-preview .charter-artist-wrapper {
+  font-size: 0.7em;
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+.chordpro-preview-panel .charter-artist,
+.chordpro-show-preview .charter-artist {
+  white-space: normal;
+  width: 73%;
+  display: inline-block;
+  box-sizing: border-box;
+  padding-right: 15px;
+}
+
+.chordpro-preview-panel .charter-song-key-tempo-wrapper,
+.chordpro-show-preview .charter-song-key-tempo-wrapper {
+  font-size: 0.8em;
+  font-weight: bold;
+}
+
+.chordpro-preview-panel .charter-song-key-tempo,
+.chordpro-show-preview .charter-song-key-tempo {
+  white-space: nowrap;
+}
+
+.chordpro-preview-panel .charter-song-body,
+.chordpro-show-preview .charter-song-body {
+  overflow: visible;
+  margin: 0;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+.chordpro-preview-panel .charter-section-wrapper,
+.chordpro-show-preview .charter-section-wrapper {
+  display: block;
+  page-break-inside: avoid;
+}
+
+.chordpro-preview-panel .charter-section-title,
+.chordpro-show-preview .charter-section-title {
+  display: block;
+  font-weight: bold;
+  line-height: 2;
+  text-transform: uppercase;
+}
+
+.chordpro-preview-panel .charter-song-line,
+.chordpro-show-preview .charter-song-line {
+  padding-left: 2em;
+  display: inline-block;
+  line-height: 1.1em;
+  padding-top: 0.2em;
+}
+
+.chordpro-preview-panel .charter-chord-wrapper,
+.chordpro-show-preview .charter-chord-wrapper {
+  display: inline-block;
+  position: relative;
+  vertical-align: bottom;
+}
+
+.chordpro-preview-panel .charter-song-line .charter-chord-wrapper .charter-chord,
+.chordpro-show-preview .charter-song-line .charter-chord-wrapper .charter-chord {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  color: #000000;
+  background-color: transparent;
+  position: relative;
+  font-weight: bold;
+  white-space: nowrap;
+  padding: 0 0.4em 0 0;
+  float: left;
+}
+
+.chordpro-preview-panel .charter-chord-lyric,
+.chordpro-show-preview .charter-chord-lyric {
+  float: left;
+  clear: both;
+}
+
+.chordpro-preview-panel .charter-direction-wrapper,
+.chordpro-show-preview .charter-direction-wrapper {
+  display: inline-block;
+  position: relative;
+  vertical-align: bottom;
+}
+
+.chordpro-preview-panel .charter-direction,
+.chordpro-show-preview .charter-direction {
+  color: #000000;
+  background-color: transparent;
+  position: relative;
+  font-weight: normal;
+  font-style: italic;
+  white-space: nowrap;
+  padding: 0;
+  float: left;
+}
+
+/* Superscript for chord extensions (7, 9, sus, etc.) */
+.chordpro-preview-panel .charter-chord sup,
+.chordpro-show-preview .charter-chord sup {
+  font-size: 0.75em;
+  vertical-align: super;
+}
