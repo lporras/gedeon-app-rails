@@ -32,60 +32,7 @@ ActiveAdmin.register Song do
     actions
   end
 
-  form do |f|
-    f.inputs do
-      f.input :title
-      f.input :position
-      f.input :content
-      f.input :author
-    end
-
-    # ChordPro Editor with Live Preview
-    f.inputs "ChordPro Editor", class: 'chordpro-editor-section' do
-      div class: 'chordpro-editor-container',
-          'data-controller': 'chordpro-preview' do
-
-        div class: 'chordpro-editor-layout' do
-          # Left: Textarea
-          div class: 'chordpro-textarea-wrapper' do
-            label 'ChordPro Content', for: 'song_chordpro_content'
-            f.text_area :chordpro_content,
-                        rows: 20,
-                        'data-chordpro-preview-target': 'input',
-                        'data-action': 'input->chordpro-preview#onInput',
-                        placeholder: "{title: Song Title}\n{artist: Artist Name}\n{key: G}\n\n{section:Verse 1}\n[G]Amazing grace how [C]sweet the [G]sound\nThat saved a wretch like [D]me"
-          end
-
-          # Right: Preview Panel
-          div class: 'chordpro-preview-wrapper' do
-            h4 'Live Preview'
-            div class: 'chordpro-error hidden',
-                'data-chordpro-preview-target': 'error' do
-            end
-            div class: 'chordpro-preview-panel',
-                'data-chordpro-preview-target': 'preview' do
-              para 'Preview will appear here...', class: 'placeholder-text'
-            end
-          end
-        end
-      end
-    end
-
-    if song.persisted?
-      panel "Slide", id: "song-slide" do
-        render partial: "iframe", locals: {song: song}
-      end
-    end
-
-    f.inputs do
-      f.has_many :video_links, heading: 'Video Links', allow_destroy: true do |f_vl|
-        f_vl.input :provider
-        f_vl.input :url
-      end
-    end
-
-    f.actions
-  end
+  form partial: 'form'
 
   show do
     attributes_table do
