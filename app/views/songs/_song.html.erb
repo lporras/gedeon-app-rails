@@ -1,8 +1,38 @@
 <%# _song.html.erb - Renders a single song in a collapsible component %>
-<details class="group collapse collapse-arrow bg-base-100 border border-base-300 rounded-xl transition duration-200 hover:border-primary/60 hover:shadow-sm">
-  <summary class="collapse-title list-none font-semibold text-primary hover:text-primary-focus flex items-center justify-between">
-    <%= song.title %>
-    <span class="badge badge-ghost group-open:hidden">ver letra</span>
+<details class="group collapse bg-base-100 border border-base-300 rounded-xl transition duration-200 hover:border-primary/60 hover:shadow-sm">
+  <summary class="collapse-title list-none cursor-pointer">
+    <div class="flex items-center justify-between">
+      <span class="flex items-center gap-2 flex-wrap">
+        <span class="font-semibold text-primary"><%= song.title %></span>
+
+        <% if song.content.present? %>
+          <span class="btn btn-sm btn-outline btn-accent pointer-events-none">
+            Ver Letra
+          </span>
+        <% end %>
+
+        <% if song.chordpro_content.present? %>
+          <button
+            class="btn btn-sm btn-outline btn-primary"
+            onclick="event.stopPropagation(); chords_modal_<%= song.id %>.showModal()"
+            type="button">
+            Ver Acordes
+          </button>
+        <% end %>
+
+        <% if song.video_links.any? %>
+          <button
+            class="btn btn-sm btn-outline btn-secondary"
+            onclick="event.stopPropagation(); video_modal_<%= song.id %>.showModal()"
+            type="button">
+            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+            Ver Video
+          </button>
+        <% end %>
+      </span>
+    </div>
   </summary>
   <div class="collapse-content pt-0">
     <article class="prose max-w-none mt-2">
@@ -10,3 +40,105 @@
     </article>
   </div>
 </details>
+
+<!-- Chords Modal -->
+<% if song.chordpro_content.present? %>
+  <dialog id="chords_modal_<%= song.id %>" class="modal">
+    <div class="modal-box max-w-4xl">
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+      </form>
+
+      <h3 class="font-bold text-lg mb-4 text-base-content"><%= song.title %> - Acordes</h3>
+
+      <!-- ChordPro Preview Container -->
+      <div data-controller="chordpro-preview">
+        <textarea
+          style="display: none;"
+          data-chordpro-preview-target="input"><%= song.chordpro_content %></textarea>
+
+        <div
+          data-chordpro-preview-target="preview"
+          class="chordpro-modal-preview">
+          <!-- ChordPro content will be rendered here -->
+        </div>
+      </div>
+
+      <div class="modal-action">
+        <form method="dialog">
+          <button class="btn btn-primary">Cerrar</button>
+        </form>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
+<% end %>
+
+<!-- Video Modal -->
+<% if song.video_links.any? %>
+  <dialog id="video_modal_<%= song.id %>" class="modal">
+    <div class="modal-box max-w-5xl w-full">
+      <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+      </form>
+
+      <h3 class="font-bold text-lg mb-4 text-base-content"><%= song.title %> - Videos</h3>
+
+      <div class="space-y-4">
+        <% song.video_links.each do |video_link| %>
+          <div class="w-full" style="aspect-ratio: 16/9; min-height: 400px;">
+            <% if video_link.provider_youtube? %>
+              <iframe
+                class="video-iframe"
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/<%= video_link.video_id %>"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+              </iframe>
+            <% elsif video_link.provider_vimeo? %>
+              <iframe
+                class="video-iframe"
+                width="100%"
+                height="100%"
+                src="https://player.vimeo.com/video/<%= video_link.video_id %>"
+                frameborder="0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowfullscreen>
+              </iframe>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="modal-action">
+        <form method="dialog">
+          <button class="btn btn-primary">Cerrar</button>
+        </form>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
+
+  <script>
+    (function() {
+      const modal = document.getElementById('video_modal_<%= song.id %>');
+      if (modal) {
+        modal.addEventListener('close', function() {
+          // Stop all videos by reloading iframes
+          const iframes = this.querySelectorAll('.video-iframe');
+          iframes.forEach(iframe => {
+            const src = iframe.src;
+            iframe.src = '';
+            iframe.src = src;
+          });
+        });
+      }
+    })();
+  </script>
+<% end %>

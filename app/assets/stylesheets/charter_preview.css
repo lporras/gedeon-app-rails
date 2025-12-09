@@ -141,3 +141,138 @@
   font-size: 0.75em;
   vertical-align: super;
 }
+
+/* ChordPro Modal Preview Styling */
+.chordpro-modal-preview {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  max-height: 60vh;
+  overflow-y: auto;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  color: #000000;
+}
+
+.chordpro-modal-preview #charter-container {
+  max-width: 100%;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  font-size: 14pt;
+}
+
+/* Apply charter styles to modal preview */
+.chordpro-modal-preview .charter-song-header {
+  background-color: #ffffff;
+  overflow: visible;
+  width: 100%;
+}
+
+.chordpro-modal-preview .charter-title-wrapper {
+  line-height: 1.2;
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+.chordpro-modal-preview .charter-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  display: inline-block;
+  white-space: normal;
+  width: 75%;
+}
+
+.chordpro-modal-preview .charter-artist-wrapper {
+  font-size: 0.7em;
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+.chordpro-modal-preview .charter-artist {
+  white-space: normal;
+  width: 73%;
+  display: inline-block;
+  box-sizing: border-box;
+  padding-right: 15px;
+}
+
+.chordpro-modal-preview .charter-song-key-tempo-wrapper {
+  font-size: 0.8em;
+  font-weight: bold;
+}
+
+.chordpro-modal-preview .charter-song-key-tempo {
+  white-space: nowrap;
+}
+
+.chordpro-modal-preview .charter-song-body {
+  overflow: visible;
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+.chordpro-modal-preview .charter-section-wrapper {
+  display: block;
+  page-break-inside: avoid;
+}
+
+.chordpro-modal-preview .charter-section-title {
+  display: block;
+  font-weight: bold;
+  line-height: 2;
+  text-transform: uppercase;
+}
+
+.chordpro-modal-preview .charter-song-line {
+  padding-left: 2em;
+  display: inline-block;
+  line-height: 1.1em;
+  padding-top: 0.2em;
+}
+
+.chordpro-modal-preview .charter-chord-wrapper {
+  display: inline-block;
+  position: relative;
+  vertical-align: bottom;
+}
+
+.chordpro-modal-preview .charter-song-line .charter-chord-wrapper .charter-chord {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  color: #000000;
+  background-color: transparent;
+  position: relative;
+  font-weight: bold;
+  white-space: nowrap;
+  padding: 0 0.4em 0 0;
+  float: left;
+}
+
+.chordpro-modal-preview .charter-chord-lyric {
+  float: left;
+  clear: both;
+}
+
+.chordpro-modal-preview .charter-direction-wrapper {
+  display: inline-block;
+  position: relative;
+  vertical-align: bottom;
+}
+
+.chordpro-modal-preview .charter-direction {
+  color: #000000;
+  background-color: transparent;
+  position: relative;
+  font-weight: normal;
+  font-style: italic;
+  white-space: nowrap;
+  padding: 0;
+  float: left;
+}
+
+.chordpro-modal-preview .charter-chord sup {
+  font-size: 0.75em;
+  vertical-align: super;
+}

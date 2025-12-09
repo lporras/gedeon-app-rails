@@ -1,0 +1,38 @@
+/* Dark Mode Support for Song Modals and Content */
+
+/* Modal Close Button Dark Mode */
+.modal-box .btn-circle.btn-ghost {
+  color: hsl(var(--bc));
+  background-color: hsl(var(--b3) / 0.5);
+}
+
+.modal-box .btn-circle.btn-ghost:hover {
+  background-color: hsl(var(--b3));
+}
+
+/* ChordPro Modal Dark Mode */
+.chordpro-modal-preview {
+  background: hsl(var(--b1));
+  color: hsl(var(--bc));
+}
+
+.chordpro-modal-preview .charter-song-header {
+  background-color: transparent;
+}
+
+.chordpro-modal-preview .charter-song-line .charter-chord-wrapper .charter-chord {
+  color: hsl(var(--p));
+}
+
+.chordpro-modal-preview .charter-direction {
+  color: hsl(var(--bc) / 0.7);
+}
+
+/* Lyrics Content Dark Mode */
+.collapse-content article.prose {
+  color: hsl(var(--bc));
+}
+
+.collapse-content article.prose p {
+  color: hsl(var(--bc));
+}
