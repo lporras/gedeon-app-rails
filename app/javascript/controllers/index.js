@@ -13,7 +13,6 @@ import InstallBannerController from "./install_banner_controller";
 import ChordproPreviewController from "./chordpro_preview_controller";
 import TabsController from "./tabs_controller"
 import PlaylistChordsController from "./playlist_chords_controller";
-import SongDetailsController from "./song_details_controller";
 
 // Configure Stimulus development experience
 application.debug = process.env.NODE_ENV === 'development';
@@ -25,6 +24,5 @@ application.register("install-banner", InstallBannerController);
 application.register("chordpro-preview", ChordproPreviewController);
 application.register("tabs", TabsController);
 application.register("playlist-chords", PlaylistChordsController);
-application.register("song-details", SongDetailsController);
 
 export default application;

@@ -26,6 +26,10 @@ export default class extends Controller {
     window.removeEventListener('hashchange', this.highlightLetterFromHash);
   }
 
+  isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+  }
+
   selectLetter(event) {
     event.preventDefault()
     const letter = event.currentTarget.dataset.letter
@@ -36,6 +40,11 @@ export default class extends Controller {
 
     // Highlight the selected letter
     this.highlightLetter(letter)
+
+    // Disable scroll on mobile to prevent infinite loop issues
+    if (this.isMobileDevice()) {
+      return
+    }
 
     // Scroll to the section
     const targetElement = document.getElementById(targetId)
