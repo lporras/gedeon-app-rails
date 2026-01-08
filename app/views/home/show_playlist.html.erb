@@ -1,21 +1,31 @@
 <%= render 'shared/theme_toggle' %>
 
-<div class="max-w-screen-lg px-2 mb-4">
-  <%= link_to "#{app_path}#playlists", class: "btn btn-ghost btn-sm mb-4" do %>
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-    </svg>
-    Volver
-  <% end %>
+<div class="max-w-screen-lg mx-auto px-4 mb-4" data-controller="playlist-chords">
+  <div class="flex items-center justify-between mb-4">
+    <%= link_to "#{app_path}#playlists", class: "btn btn-ghost btn-sm" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+      </svg>
+      Volver
+    <% end %>
+
+    <% if @playlist.songs.any? { |song| song.chordpro_content.present? } %>
+      <button
+        class="btn btn-sm btn-primary"
+        data-playlist-chords-target="toggleButton"
+        data-action="click->playlist-chords#toggle"
+        type="button">
+        Ver Acordes
+      </button>
+    <% end %>
+  </div>
 
   <div class="py-3">
     <h1 class="text-2xl sm:text-3xl font-extrabold text-center">
       <%= @playlist.name.titleize %>
     </h1>
   </div>
-</div>
 
-<div class="max-w-screen-lg px-4 mx-auto">
   <% @playlist.playlist_sections.each do |p_section| %>
     <div class="mb-10">
       <% if p_section.name.present? %>
@@ -31,9 +41,31 @@
               <h3 class="card-title text-lg">
                 <%= "#{p_item.position}. #{p_item.song.title.titleize}" %>
               </h3>
-              <div class="prose max-w-none">
+
+              <%# Lyrics content (shown by default) %>
+              <div class="prose max-w-none" data-playlist-chords-target="content">
                 <%= simple_format(p_item.song.content) %>
               </div>
+
+              <%# Chords content (hidden by default) %>
+              <% if p_item.song.chordpro_content.present? %>
+                <div class="hidden" data-playlist-chords-target="chords" data-controller="chordpro-preview">
+                  <textarea
+                    style="display: none;"
+                    data-chordpro-preview-target="input"><%= p_item.song.chordpro_content %></textarea>
+
+                  <div
+                    data-chordpro-preview-target="preview"
+                    class="chordpro-modal-preview">
+                    <!-- ChordPro content will be rendered here -->
+                  </div>
+                </div>
+              <% else %>
+                <%# If no chords, show content again so toggle doesn't hide it %>
+                <div class="hidden prose max-w-none" data-playlist-chords-target="chords">
+                  <%= simple_format(p_item.song.content) %>
+                </div>
+              <% end %>
             </div>
           </div>
         <% end %>

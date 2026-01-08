@@ -12,6 +12,7 @@ import ThemeController from "./theme_controller";
 import InstallBannerController from "./install_banner_controller";
 import ChordproPreviewController from "./chordpro_preview_controller";
 import TabsController from "./tabs_controller"
+import PlaylistChordsController from "./playlist_chords_controller";
 
 // Configure Stimulus development experience
 application.debug = process.env.NODE_ENV === 'development';
@@ -22,5 +23,6 @@ application.register("theme", ThemeController);
 application.register("install-banner", InstallBannerController);
 application.register("chordpro-preview", ChordproPreviewController);
 application.register("tabs", TabsController);
+application.register("playlist-chords", PlaylistChordsController);
 
 export default application;
