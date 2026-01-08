@@ -40,7 +40,9 @@ export default class extends Controller {
     // Scroll to the section
     const targetElement = document.getElementById(targetId)
     if (targetElement) {
-      const headerOffset = 100 // Adjust this value based on your fixed header height
+      // Calculate the actual sticky header height dynamically
+      const stickyHeader = document.querySelector('.sticky.top-0')
+      const headerOffset = stickyHeader ? stickyHeader.offsetHeight + 20 : 180 // Add 20px extra padding
       const elementPosition = targetElement.getBoundingClientRect().top
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset
 
