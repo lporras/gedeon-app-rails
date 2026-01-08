@@ -9,7 +9,16 @@ export default class extends Controller {
   connect() {
     // Get the tab from URL hash or use default
     const hash = window.location.hash.replace('#', '')
-    const initialTab = hash || this.defaultTabValue
+
+    // If hash starts with "letter-", it's a letter navigation, not a tab
+    // Default to songs tab in this case
+    let initialTab
+    if (hash.startsWith('letter-')) {
+      initialTab = 'songs'
+    } else {
+      initialTab = hash || this.defaultTabValue
+    }
+
     this.showTab(initialTab)
   }
 
