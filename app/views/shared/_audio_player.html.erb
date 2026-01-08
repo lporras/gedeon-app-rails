@@ -1,0 +1,84 @@
+<div
+  data-controller="audio-player"
+  data-audio-player-songs-value="<%= songs.to_json(only: [:id, :title, :author], include: { video_links: { only: [:id, :provider, :video_id] } }) %>"
+  class="fixed bottom-0 left-0 right-0 bg-base-100 border-t border-base-300 p-4 z-50"
+>
+  <div class="max-w-screen-lg mx-auto w-full">
+    <div class="flex items-center gap-4">
+      <!-- Album Art / Thumbnail -->
+      <div class="w-12 h-12 bg-base-300 rounded-lg flex items-center justify-center flex-shrink-0">
+        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+        </svg>
+      </div>
+
+      <!-- Song Info -->
+      <div class="flex-1 min-w-0">
+        <div class="font-medium truncate" data-audio-player-target="songTitle">No song selected</div>
+        <div class="text-sm text-gray-500 truncate" data-audio-player-target="songArtist"></div>
+      </div>
+
+      <!-- Controls -->
+      <div class="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+        <!-- Previous Song Button -->
+        <button
+          data-action="click->audio-player#previousSong"
+          class="btn btn-ghost btn-sm btn-circle"
+          title="Canción anterior"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l-7-7m0 0l7-7m-7 7h14" />
+          </svg>
+        </button>
+
+        <!-- Restart Song Button -->
+        <button
+          data-action="click->audio-player#restartSong"
+          class="btn btn-ghost btn-sm btn-circle"
+          title="Reiniciar canción"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </button>
+
+        <button
+          data-action="click->audio-player#toggle"
+          class="btn btn-primary btn-circle w-10 h-10 p-0 flex items-center justify-center"
+          title="Play/Pause"
+        >
+          <svg data-audio-player-target="playIcon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+          </svg>
+          <svg data-audio-player-target="pauseIcon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+          </svg>
+        </button>
+
+        <button
+          data-action="click->audio-player#next"
+          class="btn btn-ghost btn-sm btn-circle"
+          title="Next"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="mt-2">
+      <div class="flex justify-between text-xs text-gray-500 mb-1">
+        <span data-audio-player-target="currentTime">0:00</span>
+        <span data-audio-player-target="duration">0:00</span>
+      </div>
+      <div class="h-1.5 bg-base-300 rounded-full overflow-hidden cursor-pointer" data-action="click->audio-player#seek">
+        <div class="h-full bg-primary transition-all duration-200" data-audio-player-target="progressBar" style="width: 0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- YouTube Player (hidden) -->
+  <div id="youtube-player" class="hidden"></div>
+</div>
