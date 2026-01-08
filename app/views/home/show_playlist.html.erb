@@ -34,9 +34,8 @@
   <% @playlist.playlist_sections.each do |p_section| %>
     <div class="mb-10">
       <% if p_section.name.present? %>
-        <div class="divider">
-          <h2 class="text-xl font-bold"><%= p_section.name.titleize %></h2>
-        </div>
+        <h2 class="text-xl font-bold break-words text-center mb-6 mt-4 px-4"><%= p_section.name.titleize %></h2>
+        <div class="divider my-0"></div>
       <% end %>
 
       <div class="space-y-8">
@@ -48,7 +47,7 @@
               </h3>
 
               <%# Lyrics content (shown by default) %>
-              <div class="prose max-w-none" data-playlist-chords-target="content">
+              <div class="prose max-w-none break-words" data-playlist-chords-target="content">
                 <%= simple_format(p_item.song.content) %>
               </div>
 
@@ -67,7 +66,7 @@
                 </div>
               <% else %>
                 <%# If no chords, show content again so toggle doesn't hide it %>
-                <div class="hidden prose max-w-none" data-playlist-chords-target="chords">
+                <div class="hidden prose max-w-none break-words" data-playlist-chords-target="chords">
                   <%= simple_format(p_item.song.content) %>
                 </div>
               <% end %>
