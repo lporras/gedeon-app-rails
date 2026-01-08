@@ -276,3 +276,45 @@
   font-size: 0.75em;
   vertical-align: super;
 }
+
+/* Mobile responsive fixes */
+@media (max-width: 640px) {
+  .chordpro-modal-preview {
+    padding: 10px;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .chordpro-modal-preview #charter-container {
+    font-size: 12pt;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .chordpro-modal-preview .charter-song-line {
+    padding-left: 0.5em;
+    display: block;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .chordpro-modal-preview .charter-section-title {
+    font-size: 0.9em;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .chordpro-modal-preview .charter-title {
+    font-size: 1.2em;
+    width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .chordpro-modal-preview .charter-artist {
+    width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+}
