@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["banner", "iosTip", "iosModal", "installButton", "dismissButton"]
-  
+
   connect() {
     console.log('Install banner controller connected, pathname:', window.location.pathname)
 
@@ -22,36 +22,36 @@ export default class extends Controller {
       this.element.remove()
     }
   }
-  
+
   disconnect() {
     this.removeEventListeners()
   }
-  
+
   setupEventListeners() {
     if (this.hasDismissButtonTarget) {
       this.dismissButtonTarget.addEventListener('click', this.handleDismiss.bind(this))
     }
-    
+
     if (this.hasInstallButtonTarget) {
       this.installButtonTarget.addEventListener('click', this.handleInstallClick.bind(this))
     }
-    
+
     // Re-initialize when the page becomes visible again (for mobile devices)
     document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this))
   }
-  
+
   removeEventListeners() {
     if (this.hasDismissButtonTarget) {
       this.dismissButtonTarget.removeEventListener('click', this.handleDismiss)
     }
-    
+
     if (this.hasInstallButtonTarget) {
       this.installButtonTarget.removeEventListener('click', this.handleInstallClick)
     }
-    
+
     document.removeEventListener('visibilitychange', this.handleVisibilityChange)
   }
-  
+
   initializeInstallPrompt() {
     // Check if the browser supports PWA installation
     const handleBeforeInstallPrompt = (e) => {
@@ -89,7 +89,7 @@ export default class extends Controller {
       }, 3000)
     }
   }
-  
+
   wasDismissed() {
     // Check both old and new keys for backward compatibility
     const oldKey = localStorage.getItem('hm_install_banner_dismissed_v2') === '1'
@@ -112,27 +112,27 @@ export default class extends Controller {
     localStorage.setItem('installBannerDismissed', '1')
     this.hideBanner()
   }
-  
+
   async handleInstallClick() {
     // Show iOS instructions if on iOS
     if (this.isIOS) {
       if (this.hasIosTipTarget) {
         this.iosTipTarget.classList.remove('hidden')
       }
-      
+
       // Show iOS modal if available
       if (this.hasIosModalTarget && typeof this.iosModalTarget.showModal === 'function') {
         this.iosModalTarget.showModal()
       }
       return
     }
-    
+
     // Handle PWA installation prompt
     if (this.deferredPrompt && typeof this.deferredPrompt.prompt === 'function') {
       try {
         await this.deferredPrompt.prompt()
         const { outcome } = await this.deferredPrompt.userChoice
-        
+
         if (outcome === 'accepted') {
           this.hideBanner()
         }
@@ -152,13 +152,13 @@ export default class extends Controller {
       }
     }
   }
-  
+
   handleVisibilityChange() {
     if (document.visibilityState === 'visible' && !this.wasDismissed()) {
       this.initializeInstallPrompt()
     }
   }
-  
+
   showBanner() {
     console.log('Showing install banner')
     if (this.hasBannerTarget) {
