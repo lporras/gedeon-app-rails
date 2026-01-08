@@ -3,7 +3,7 @@ require 'video_player'
 ActiveAdmin.register Song do
   menu priority: 3
 
-  permit_params :title, :content, :position, :author,
+  permit_params :title, :content, :position, :author, :chordpro_content,
                 video_links_attributes: [
                   :id,
                   :provider,
@@ -32,29 +32,7 @@ ActiveAdmin.register Song do
     actions
   end
 
-  form do |f|
-    f.inputs do
-      f.input :title
-      f.input :position
-      f.input :content
-      f.input :author
-    end
-
-    if song.persisted?
-      panel "Slide", id: "song-slide" do
-        render partial: "iframe", locals: {song: song}
-      end
-    end
-
-    f.inputs do
-      f.has_many :video_links, heading: 'Video Links', allow_destroy: true do |f_vl|
-        f_vl.input :provider
-        f_vl.input :url
-      end
-    end
-
-    f.actions
-  end
+  form partial: 'form'
 
   show do
     attributes_table do
@@ -64,6 +42,24 @@ ActiveAdmin.register Song do
         simple_format song.content
       end
       row :author
+
+      # Add ChordPro preview if content exists
+      if song.chordpro_content.present?
+        row :chordpro_preview do |song|
+          div class: 'chordpro-show-preview',
+              'data-controller': 'chordpro-preview' do
+            # Hidden textarea for Stimulus controller
+            textarea song.chordpro_content,
+                     style: 'display: none;',
+                     'data-chordpro-preview-target': 'input'
+
+            # Preview panel (auto-renders on connect)
+            div 'data-chordpro-preview-target': 'preview' do
+            end
+          end
+        end
+      end
+
       row :video_links do |song|
         song.video_links.each do |video_link|
           div do

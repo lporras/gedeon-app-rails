@@ -42,10 +42,16 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby-version }}
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+
       - name: Dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y nodejs postgresql-client wkhtmltopdf libpq-dev
+          sudo apt-get install -y postgresql-client wkhtmltopdf libpq-dev
 
       - name: Install Gems dependencies
         env:

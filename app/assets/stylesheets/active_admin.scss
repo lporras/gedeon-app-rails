@@ -17,6 +17,9 @@ $skinHeaderBck: orange;
 $panelHeaderBck: black;
 
 @import "active_skin";
+@import "charter_preview";
+@import "chordpro_editor";
+@import "form_sticky_actions";
 
 // Overriding any non-variable SASS must be done after the fact.
 // For example, to change the default status-tag color:

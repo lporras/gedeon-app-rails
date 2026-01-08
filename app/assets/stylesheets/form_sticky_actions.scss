@@ -1,0 +1,69 @@
+// Sticky Action Bar for Song Forms
+
+.sticky-form-actions {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #f4f4f4;
+  border-bottom: 1px solid #d4d4d4;
+  padding: 12px 20px;
+  margin: -20px -20px 20px -20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sticky-actions-content {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.sticky-form-actions .button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  border: none;
+  font-size: 14px;
+}
+
+.sticky-form-actions .button.primary {
+  background: #5E6469;
+  color: white;
+}
+
+.sticky-form-actions .button.primary:hover {
+  background: #4a5157;
+}
+
+.sticky-form-actions .button.cancel {
+  background: transparent;
+  color: #5E6469;
+  border: 1px solid #d4d4d4;
+}
+
+.sticky-form-actions .button.cancel:hover {
+  background: #e8e8e8;
+}
+
+.active_admin form {
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .sticky-form-actions {
+    padding: 10px 15px;
+  }
+
+  .sticky-actions-content {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .sticky-form-actions .button {
+    width: 100%;
+    text-align: center;
+  }
+}

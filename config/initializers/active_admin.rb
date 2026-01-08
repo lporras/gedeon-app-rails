@@ -201,6 +201,9 @@ ActiveAdmin.setup do |config|
   # To load a javascript file:
   #   config.register_javascript 'my_javascript.js'
 
+  # Load main application JavaScript (includes ChordPro preview controller)
+  config.register_javascript 'application.js'
+
   # == CSV options
   #
   # Set the CSV builder separator

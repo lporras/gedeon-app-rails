@@ -1,0 +1,190 @@
+@charset "utf-8";
+$font-family: Verdana, Arial, Helvetica, sans-serif;
+
+* html, body, h1, h2 {
+	font-family: $font-family;
+	font-size: 9pt;
+}
+
+.charter-song-header {
+	background-color: #ffffff;
+	overflow: visible;
+	width: 100%;
+}
+
+.charter-logo {
+	position: absolute;
+	max-width: 240px;
+	top: 0;
+	right: 0;
+}
+
+.charter-title-wrapper {
+	line-height: 1.2;
+	display: block;
+	width: 100%;
+	overflow: visible;
+}
+
+.charter-title {
+	font-size: 1.5em;
+	font-weight: bold;
+	display: inline-block;
+	white-space: normal;
+	width: 75%;
+}
+
+.charter-sub-title {
+	font-size: .7em;
+	display: inline-block;
+	white-space: normal;
+	width: 85%;
+}
+
+.charter-artist-wrapper {
+	font-size: .7em;
+	display: block;
+	width: 100%;
+	overflow: visible;
+}
+
+.charter-artist {
+	white-space: normal;
+	width: 73%;
+	display: inline-block;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	padding-right: 15px;
+}
+
+.charter-song-key-tempo-wrapper {
+	font-size: .8em;
+	font-weight: bold;
+}
+
+.charter-song-key-tempo {
+	white-space: nowrap;
+}
+
+.charter-song-key {
+	font-weight: bold;
+	color: #000000;
+	background-color: transparent;
+}
+
+.charter-tempo-time-wrapper {
+	white-space: nowrap;
+}
+
+.charter-song-body {
+	overflow: visible;
+}
+
+.charter-section-title {
+	display: block;
+	font-weight: bold;
+	line-height: 2;
+	text-transform: uppercase;
+}
+
+.charter-column {
+	float: left;
+	width: 50%;
+	font-size: .9em;
+	white-space: -moz-pre-wrap;
+	white-space: pre-wrap;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	max-width: 440px;
+}
+
+.charter-column.left-column {
+	padding-right: 10px;
+}
+
+.charter-column.right-column {
+	padding-left: 10px;
+}
+
+.charter-column .charter-section-wrapper .charter-song-line {
+	padding-left: 0;
+}
+
+.charter-song-body:after {
+	content: "";
+	display: table;
+	clear: both;
+}
+
+.charter-section-wrapper {
+	display: block;
+	-moz-page-break-inside: avoid;
+	page-break-inside: avoid;
+}
+
+.charter-song-line {
+	padding-left: 2em;
+	display: inline-block;
+	line-height: 1.1em;
+	padding-top: .2em;
+}
+
+.charter-chord-wrapper {
+	display: inline-block;
+	position: relative;
+	vertical-align: bottom;
+}
+
+.charter-song-line .charter-chord-wrapper .charter-chord {
+	font-family: $font-family;
+	color: #000000;
+	background-color: transparent;
+	position: relative;
+	font-weight: bold;
+	white-space: nowrap;
+	padding: 0 .4em 0 0;
+	float: left;
+}
+
+.charter-chord-lyric {
+	float: left;
+	clear: both;
+}
+
+.charter-direction-wrapper {
+	display: inline-block;
+	position: relative;
+	vertical-align: bottom;
+}
+
+.charter-direction {
+	color: #000000;
+	background-color: transparent;
+	position: relative;
+	font-weight: normal;
+	font-style: italic;
+	white-space: nowrap;
+	padding: 0;
+	float: left;
+}
+
+pre {
+	margin: 0 0 0;
+	font-family: $font-family;
+}
+
+#charter-container {
+	position: relative;
+	overflow: hidden;
+}
+
+#charter-container div {
+	-moz-page-break-inside: auto;
+	page-break-inside: auto;
+}
+
+@media print {
+	@page { margin: .7cm; }
+	body { margin: 0; font-size: 0.95em; }
+}
