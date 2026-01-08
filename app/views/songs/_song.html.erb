@@ -1,11 +1,11 @@
 <%# _song.html.erb - Renders a single song in a collapsible component %>
-<div class="grid grid-cols-1">
+<div class="grid grid-cols-1" data-controller="song-details">
   <!-- Details/Summary element -->
   <div class="col-start-1 row-start-1">
     <details
-      id="song_details_<%= song.id %>"
-      class="group collapse bg-base-100 border border-base-300 rounded-xl transition duration-200 hover:border-primary/60 hover:shadow-sm"
-      ontoggle="if(this.open) setTimeout(() => this.scrollIntoView({behavior: 'smooth', block: 'nearest'}), 150)">
+      data-song-details-target="details"
+      data-action="toggle->song-details#toggle"
+      class="group collapse bg-base-100 border border-base-300 rounded-xl transition duration-200 hover:border-primary/60 hover:shadow-sm">
       <summary class="collapse-title list-none cursor-pointer">
         <div class="flex items-center justify-between">
           <span class="font-semibold text-primary"><%= song.title %></span>
@@ -24,7 +24,7 @@
     <% if song.content.present? %>
       <button
         class="btn btn-xs sm:btn-sm btn-outline btn-accent pointer-events-auto flex items-center"
-        onclick="document.getElementById('song_details_<%= song.id %>').open = !document.getElementById('song_details_<%= song.id %>').open"
+        data-action="click->song-details#toggleFromButton"
         type="button">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
