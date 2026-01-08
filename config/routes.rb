@@ -8,6 +8,7 @@ Rails.application.routes.draw do
 
   root to: "home#show"
   get :app, to: "home#app"
+  get 'playlists/:id', to: 'home#show_playlist', as: :show_playlist
   # PWA manifest per subdomain, scoped to /app/
   get "/app/manifest.webmanifest", to: "manifests#show"
 

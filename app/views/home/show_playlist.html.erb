@@ -1,0 +1,43 @@
+<%= render 'shared/theme_toggle' %>
+
+<div class="max-w-screen-lg px-2 mb-4">
+  <%= link_to "#{app_path}#playlists", class: "btn btn-ghost btn-sm mb-4" do %>
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+    </svg>
+    Volver
+  <% end %>
+
+  <div class="py-3">
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-center">
+      <%= @playlist.name.titleize %>
+    </h1>
+  </div>
+</div>
+
+<div class="max-w-screen-lg px-4 mx-auto">
+  <% @playlist.playlist_sections.each do |p_section| %>
+    <div class="mb-10">
+      <% if p_section.name.present? %>
+        <div class="divider">
+          <h2 class="text-xl font-bold"><%= p_section.name.titleize %></h2>
+        </div>
+      <% end %>
+
+      <div class="space-y-8">
+        <% p_section.playlist_items.each do |p_item| %>
+          <div class="card bg-base-200 shadow-md">
+            <div class="card-body">
+              <h3 class="card-title text-lg">
+                <%= "#{p_item.position}. #{p_item.song.title.titleize}" %>
+              </h3>
+              <div class="prose max-w-none">
+                <%= simple_format(p_item.song.content) %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
