@@ -16,6 +16,9 @@
   </div>
 </div>
 
+<%# Audio Player - This needs to be outside any fixed/absolute positioned containers %>
+<%= render 'shared/audio_player', songs: @songs.includes(:video_links) %>
+
 <%# Tabs Navigation %>
 <div data-controller="tabs" data-tabs-default-tab-value="songs" class="w-full pb-12">
   <%# Sticky header containing tabs and navigation %>
