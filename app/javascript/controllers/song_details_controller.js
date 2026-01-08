@@ -7,9 +7,18 @@ export default class extends Controller {
     this.isScrolling = false
   }
 
+  isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+  }
+
   toggle(event) {
     // Only handle when details is opened
     if (!this.detailsTarget.open || this.isScrolling) {
+      return
+    }
+
+    // Disable scrollIntoView on mobile to prevent infinite loop issues
+    if (this.isMobileDevice()) {
       return
     }
 
