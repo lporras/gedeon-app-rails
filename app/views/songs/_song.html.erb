@@ -113,7 +113,7 @@
                 class="video-iframe"
                 width="100%"
                 height="100%"
-                src="https://www.youtube.com/embed/<%= video_link.video_id %>"
+                data-src="https://www.youtube.com/embed/<%= video_link.video_id %>"
                 frameborder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowfullscreen>
@@ -123,7 +123,7 @@
                 class="video-iframe"
                 width="100%"
                 height="100%"
-                src="https://player.vimeo.com/video/<%= video_link.video_id %>"
+                data-src="https://player.vimeo.com/video/<%= video_link.video_id %>"
                 frameborder="0"
                 allow="autoplay; fullscreen; picture-in-picture"
                 allowfullscreen>
@@ -148,13 +148,24 @@
     (function() {
       const modal = document.getElementById('video_modal_<%= song.id %>');
       if (modal) {
+        // Load iframes when modal opens
+        const openButton = document.querySelector('[onclick="video_modal_<%= song.id %>.showModal()"]');
+        if (openButton) {
+          openButton.addEventListener('click', function() {
+            const iframes = modal.querySelectorAll('.video-iframe');
+            iframes.forEach(iframe => {
+              if (iframe.dataset.src && !iframe.src) {
+                iframe.src = iframe.dataset.src;
+              }
+            });
+          });
+        }
+
+        // Unload iframes when modal closes
         modal.addEventListener('close', function() {
-          // Stop all videos by reloading iframes
           const iframes = this.querySelectorAll('.video-iframe');
           iframes.forEach(iframe => {
-            const src = iframe.src;
             iframe.src = '';
-            iframe.src = src;
           });
         });
       }
