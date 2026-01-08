@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["toggleButton", "content", "chords"]
+  static targets = ["toggleButton", "buttonText", "content", "chords"]
 
   connect() {
     this.showingChords = false
@@ -14,12 +14,12 @@ export default class extends Controller {
       // Show chords, hide content
       this.contentTargets.forEach(el => el.classList.add('hidden'))
       this.chordsTargets.forEach(el => el.classList.remove('hidden'))
-      this.toggleButtonTarget.textContent = 'Ver Letras'
+      this.buttonTextTarget.textContent = 'Ver Letras'
     } else {
       // Show content, hide chords
       this.contentTargets.forEach(el => el.classList.remove('hidden'))
       this.chordsTargets.forEach(el => el.classList.add('hidden'))
-      this.toggleButtonTarget.textContent = 'Ver Acordes'
+      this.buttonTextTarget.textContent = 'Ver Acordes'
     }
   }
 }
