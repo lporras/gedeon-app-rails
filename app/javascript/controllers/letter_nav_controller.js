@@ -31,35 +31,10 @@ export default class extends Controller {
   }
 
   selectLetter(event) {
-    event.preventDefault()
+    // Let the browser handle navigation via the anchor href
+    // Just highlight the selected letter
     const letter = event.currentTarget.dataset.letter
-    const targetId = `letter-${letter}`
-
-    // Update URL hash
-    window.location.hash = targetId
-
-    // Highlight the selected letter
     this.highlightLetter(letter)
-
-    // Disable scroll on mobile to prevent infinite loop issues
-    if (this.isMobileDevice()) {
-      return
-    }
-
-    // Scroll to the section
-    const targetElement = document.getElementById(targetId)
-    if (targetElement) {
-      // Calculate the actual sticky header height dynamically
-      const stickyHeader = document.querySelector('.sticky.top-0')
-      const headerOffset = stickyHeader ? stickyHeader.offsetHeight + 20 : 180 // Add 20px extra padding
-      const elementPosition = targetElement.getBoundingClientRect().top
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      })
-    }
   }
 
   highlightLetterFromHash() {
