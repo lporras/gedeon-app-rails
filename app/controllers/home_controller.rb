@@ -6,6 +6,11 @@ class HomeController < ApplicationController
   def app
     @q = Song.ransack(params[:q])
     @songs = @q.result(distinct: true).order(title: :asc).all
+    @playlists = Playlist.active.order(name: :asc)
+  end
+
+  def show_playlist
+    @playlist = Playlist.active.find(params[:id])
   end
 
   private
