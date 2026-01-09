@@ -8,7 +8,9 @@ export default class extends Controller {
     'songArtist',
     'currentTime',
     'duration',
-    'progressBar'
+    'progressBar',
+    'progressContainer',
+    'seekHandle'
   ]
 
   static values = {
@@ -21,6 +23,7 @@ export default class extends Controller {
     this.isPlaying = false
     this.songs = this.songsValue
     this.progressUpdateInterval = null
+    this.isDragging = false
 
     // Make sure we have the songs data
     if (!this.songs || !Array.isArray(this.songs)) {
@@ -52,6 +55,14 @@ export default class extends Controller {
     }
     if (this.progressUpdateInterval) {
       clearInterval(this.progressUpdateInterval)
+    }
+    if (this.boundHandleDrag) {
+      document.removeEventListener('mousemove', this.boundHandleDrag)
+      document.removeEventListener('touchmove', this.boundHandleDrag)
+    }
+    if (this.boundStopDrag) {
+      document.removeEventListener('mouseup', this.boundStopDrag)
+      document.removeEventListener('touchend', this.boundStopDrag)
     }
   }
 
@@ -339,6 +350,7 @@ export default class extends Controller {
 
   updateProgress() {
     if (!this.youTubePlayer || !this.youTubePlayer.getCurrentTime) return
+    if (this.isDragging) return // Don't update while dragging
 
     try {
       const currentTime = this.youTubePlayer.getCurrentTime()
@@ -347,6 +359,7 @@ export default class extends Controller {
       // Update progress bar
       const progress = (currentTime / duration) * 100
       this.progressBarTarget.style.width = `${progress}%`
+      this.seekHandleTarget.style.left = `${progress}%`
 
       // Update time displays
       this.currentTimeTarget.textContent = this.formatTime(currentTime)
@@ -360,5 +373,87 @@ export default class extends Controller {
     const minutes = Math.floor(seconds / 60)
     const remainingSeconds = Math.floor(seconds % 60)
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
+  }
+
+  seek(event) {
+    if (!this.youTubePlayer || this.currentTrackIndex === -1) return
+    if (event.target === this.seekHandleTarget) return // Don't seek if clicking the handle itself
+
+    const rect = this.progressContainerTarget.getBoundingClientRect()
+    const clickX = event.clientX - rect.left
+    const percentage = Math.max(0, Math.min(100, (clickX / rect.width) * 100))
+
+    const duration = this.youTubePlayer.getDuration()
+    const seekTime = (percentage / 100) * duration
+
+    this.youTubePlayer.seekTo(seekTime, true)
+
+    // Update UI immediately
+    this.progressBarTarget.style.width = `${percentage}%`
+    this.seekHandleTarget.style.left = `${percentage}%`
+    this.currentTimeTarget.textContent = this.formatTime(seekTime)
+  }
+
+  startDrag(event) {
+    event.preventDefault()
+    this.isDragging = true
+
+    // Bind drag handlers
+    this.boundHandleDrag = this.handleDrag.bind(this)
+    this.boundStopDrag = this.stopDrag.bind(this)
+
+    document.addEventListener('mousemove', this.boundHandleDrag)
+    document.addEventListener('mouseup', this.boundStopDrag)
+    document.addEventListener('touchmove', this.boundHandleDrag)
+    document.addEventListener('touchend', this.boundStopDrag)
+
+    // Add visual feedback
+    this.seekHandleTarget.style.transform = 'scale(1.2)'
+  }
+
+  handleDrag(event) {
+    if (!this.isDragging || !this.youTubePlayer) return
+
+    event.preventDefault()
+
+    const clientX = event.type.includes('touch') ? event.touches[0].clientX : event.clientX
+    const rect = this.progressContainerTarget.getBoundingClientRect()
+    const dragX = clientX - rect.left
+    const percentage = Math.max(0, Math.min(100, (dragX / rect.width) * 100))
+
+    // Update UI immediately for smooth dragging
+    this.progressBarTarget.style.width = `${percentage}%`
+    this.seekHandleTarget.style.left = `${percentage}%`
+
+    // Update time display
+    const duration = this.youTubePlayer.getDuration()
+    const seekTime = (percentage / 100) * duration
+    this.currentTimeTarget.textContent = this.formatTime(seekTime)
+  }
+
+  stopDrag(event) {
+    if (!this.isDragging) return
+
+    event.preventDefault()
+    this.isDragging = false
+
+    // Remove drag handlers
+    document.removeEventListener('mousemove', this.boundHandleDrag)
+    document.removeEventListener('mouseup', this.boundStopDrag)
+    document.removeEventListener('touchmove', this.boundHandleDrag)
+    document.removeEventListener('touchend', this.boundStopDrag)
+
+    // Remove visual feedback
+    this.seekHandleTarget.style.transform = ''
+
+    // Seek to the final position
+    if (this.youTubePlayer && this.currentTrackIndex !== -1) {
+      const rect = this.progressContainerTarget.getBoundingClientRect()
+      const handleLeft = parseFloat(this.seekHandleTarget.style.left) || 0
+      const duration = this.youTubePlayer.getDuration()
+      const seekTime = (handleLeft / 100) * duration
+
+      this.youTubePlayer.seekTo(seekTime, true)
+    }
   }
 }

@@ -73,8 +73,16 @@
         <span data-audio-player-target="currentTime">0:00</span>
         <span data-audio-player-target="duration">0:00</span>
       </div>
-      <div class="h-1.5 bg-base-300 rounded-full overflow-hidden cursor-pointer" data-action="click->audio-player#seek">
-        <div class="h-full bg-primary transition-all duration-200" data-audio-player-target="progressBar" style="width: 0%"></div>
+      <div class="relative h-1.5 bg-base-300 rounded-full cursor-pointer"
+           data-audio-player-target="progressContainer"
+           data-action="click->audio-player#seek">
+        <div class="h-full bg-primary transition-all duration-200 rounded-full"
+             data-audio-player-target="progressBar"
+             style="width: 0%"></div>
+        <div class="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-primary border-2 border-white rounded-full cursor-grab active:cursor-grabbing shadow-md transition-all duration-200 hover:scale-125"
+             data-audio-player-target="seekHandle"
+             data-action="mousedown->audio-player#startDrag touchstart->audio-player#startDrag"
+             style="left: 0%"></div>
       </div>
     </div>
   </div>
