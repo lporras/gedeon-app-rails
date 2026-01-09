@@ -75,7 +75,7 @@
       </div>
       <div class="relative h-1.5 bg-base-300 rounded-full cursor-pointer"
            data-audio-player-target="progressContainer"
-           data-action="click->audio-player#seek">
+           data-action="click->audio-player#seek mouseenter->audio-player#showTooltip mouseleave->audio-player#hideTooltip mousemove->audio-player#updateTooltip">
         <div class="h-full bg-primary transition-all duration-200 rounded-full"
              data-audio-player-target="progressBar"
              style="width: 0%"></div>
@@ -83,6 +83,9 @@
              data-audio-player-target="seekHandle"
              data-action="mousedown->audio-player#startDrag touchstart->audio-player#startDrag"
              style="left: 0%"></div>
+        <div class="absolute -top-8 bg-gray-900 text-white text-xs px-2 py-1 rounded pointer-events-none opacity-0 transition-opacity duration-150"
+             data-audio-player-target="tooltip"
+             style="left: 0%; transform: translateX(-50%);">0:00</div>
       </div>
     </div>
   </div>

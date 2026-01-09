@@ -10,7 +10,8 @@ export default class extends Controller {
     'duration',
     'progressBar',
     'progressContainer',
-    'seekHandle'
+    'seekHandle',
+    'tooltip'
   ]
 
   static values = {
@@ -455,5 +456,29 @@ export default class extends Controller {
 
       this.youTubePlayer.seekTo(seekTime, true)
     }
+  }
+
+  showTooltip(event) {
+    if (!this.youTubePlayer || this.currentTrackIndex === -1) return
+    this.tooltipTarget.style.opacity = '1'
+  }
+
+  hideTooltip(event) {
+    this.tooltipTarget.style.opacity = '0'
+  }
+
+  updateTooltip(event) {
+    if (!this.youTubePlayer || this.currentTrackIndex === -1) return
+
+    const rect = this.progressContainerTarget.getBoundingClientRect()
+    const mouseX = event.clientX - rect.left
+    const percentage = Math.max(0, Math.min(100, (mouseX / rect.width) * 100))
+
+    const duration = this.youTubePlayer.getDuration()
+    const hoverTime = (percentage / 100) * duration
+
+    // Update tooltip position and text
+    this.tooltipTarget.style.left = `${percentage}%`
+    this.tooltipTarget.textContent = this.formatTime(hoverTime)
   }
 }
