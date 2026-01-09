@@ -1,6 +1,6 @@
 <div
   data-controller="audio-player"
-  data-audio-player-songs-value="<%= songs.to_json(only: [:id, :title, :author], include: { video_links: { only: [:id, :provider, :video_id] } }) %>"
+  data-audio-player-songs-value="<%= songs.map { |song| { id: song.id, title: song.title, author: song.author, video_links: song.video_links.limit(1).map { |vl| { id: vl.id, provider: vl.provider, video_id: vl.video_id } } } }.to_json %>"
   class="bg-base-100 border-t border-base-300 px-4 pt-4 z-50"
   style="padding-bottom: max(1rem, env(safe-area-inset-bottom, 1rem) + 2rem);"
 >
