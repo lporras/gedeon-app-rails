@@ -26,15 +26,31 @@ export default class extends Controller {
     window.removeEventListener('hashchange', this.highlightLetterFromHash);
   }
 
-  isMobileDevice() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-  }
-
   selectLetter(event) {
-    // Let the browser handle navigation via the anchor href
-    // Just highlight the selected letter
+    event.preventDefault()
     const letter = event.currentTarget.dataset.letter
+    const targetId = `letter-${letter}`
+
+    // Update URL hash
+    window.location.hash = targetId
+
+    // Highlight the selected letter
     this.highlightLetter(letter)
+
+    // Scroll to the section
+    const targetElement = document.getElementById(targetId)
+    if (targetElement) {
+      // Calculate the actual sticky header height dynamically
+      const stickyHeader = document.querySelector('.sticky.top-0')
+      const headerOffset = stickyHeader ? stickyHeader.offsetHeight + 20 : 180 // Add 20px extra padding
+      const elementPosition = targetElement.getBoundingClientRect().top
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      })
+    }
   }
 
   highlightLetterFromHash() {
