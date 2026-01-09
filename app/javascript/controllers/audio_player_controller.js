@@ -34,6 +34,9 @@ export default class extends Controller {
       console.log('Audio player connected with', this.songs.length, 'songs')
     }
 
+    // Fix for iOS Safari/Chrome dynamic viewport
+    this.fixIOSViewport()
+
     // Initialize YouTube IFrame API
     this.loadYouTubeAPI()
 
@@ -480,5 +483,36 @@ export default class extends Controller {
     // Update tooltip position and text
     this.tooltipTarget.style.left = `${percentage}%`
     this.tooltipTarget.textContent = this.formatTime(hoverTime)
+  }
+
+  fixIOSViewport() {
+    // Check if we're on iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
+
+    if (!isIOS) return
+
+    // Set initial viewport height
+    const setViewportHeight = () => {
+      const vh = window.innerHeight * 0.01
+      document.documentElement.style.setProperty('--vh', `${vh}px`)
+    }
+
+    setViewportHeight()
+
+    // Update on resize and orientation change
+    window.addEventListener('resize', setViewportHeight)
+    window.addEventListener('orientationchange', setViewportHeight)
+
+    // Also listen to scroll to handle address bar hide/show
+    let ticking = false
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setViewportHeight()
+          ticking = false
+        })
+        ticking = true
+      }
+    })
   }
 }
