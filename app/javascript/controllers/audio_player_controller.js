@@ -22,16 +22,34 @@ export default class extends Controller {
     this.songs = this.songsValue
     this.progressUpdateInterval = null
 
+    // Make sure we have the songs data
+    if (!this.songs || !Array.isArray(this.songs)) {
+      console.error('No songs data found')
+      this.songs = []
+    } else {
+      console.log('Audio player connected with', this.songs.length, 'songs')
+    }
+
     // Initialize YouTube IFrame API
     this.loadYouTubeAPI()
 
     // Add keyboard shortcuts
-    document.addEventListener('keydown', this.handleKeyDown.bind(this))
+    this.boundHandleKeyDown = this.handleKeyDown.bind(this)
+    document.addEventListener('keydown', this.boundHandleKeyDown)
+
+    // Listen for play-song events from song buttons
+    this.boundHandlePlaySong = this.handlePlaySongEvent.bind(this)
+    window.addEventListener('play-song', this.boundHandlePlaySong)
   }
 
   disconnect() {
     // Clean up event listeners
-    document.removeEventListener('keydown', this.handleKeyDown.bind(this))
+    if (this.boundHandleKeyDown) {
+      document.removeEventListener('keydown', this.boundHandleKeyDown)
+    }
+    if (this.boundHandlePlaySong) {
+      window.removeEventListener('play-song', this.boundHandlePlaySong)
+    }
     if (this.progressUpdateInterval) {
       clearInterval(this.progressUpdateInterval)
     }
@@ -53,6 +71,31 @@ export default class extends Controller {
       event.preventDefault()
       this.previousSong()  // For backward compatibility - redirect to previousSong
     }
+  }
+
+  handlePlaySongEvent(event) {
+    const songId = event.detail.songId
+    console.log('Received play-song event for song ID:', songId)
+
+    const songIndex = this.songs.findIndex(song => song.id === songId)
+
+    if (songIndex === -1) {
+      console.error('Song not found:', songId)
+      return
+    }
+
+    console.log('Found song at index:', songIndex)
+
+    // If the same song is already playing, just toggle play/pause
+    if (this.currentTrackIndex === songIndex) {
+      console.log('Same song, toggling play/pause')
+      this.toggle()
+      return
+    }
+
+    // Otherwise, play the selected song
+    console.log('Playing new song')
+    this.playSong(songIndex)
   }
 
   loadYouTubeAPI() {
@@ -100,6 +143,12 @@ export default class extends Controller {
     console.log('YouTube player ready')
     // Start progress update loop
     this.startProgressUpdate()
+
+    // If we have a song to play, play it
+    if (this.currentTrackIndex >= 0 && !this.isPlaying) {
+      console.log('Auto-playing queued song at index:', this.currentTrackIndex)
+      this.playSong(this.currentTrackIndex)
+    }
   }
 
   onPlayerStateChange(event) {
@@ -107,10 +156,12 @@ export default class extends Controller {
       this.next()
     } else if (event.data === YT.PlayerState.PLAYING) {
       this.isPlaying = true
+      this.playIconTarget.classList.remove('loading')
       this.playIconTarget.classList.add('hidden')
       this.pauseIconTarget.classList.remove('hidden')
     } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.CUED) {
       this.isPlaying = false
+      this.playIconTarget.classList.remove('loading')
       this.playIconTarget.classList.remove('hidden')
       this.pauseIconTarget.classList.add('hidden')
     }
@@ -131,14 +182,15 @@ export default class extends Controller {
   }
 
   playSong(index) {
+    console.log('playSong called with index:', index)
+
+    // Stop any currently playing song
+    if (this.youTubePlayer && typeof this.youTubePlayer.stopVideo === 'function') {
+      this.youTubePlayer.stopVideo()
+    }
+
     if (index < 0 || index >= this.songs.length) {
-      // No more songs to play
-      this.currentTrackIndex = -1
-      this.songTitleTarget.textContent = 'No song selected'
-      this.songArtistTarget.textContent = ''
-      this.durationTarget.textContent = '0:00'
-      this.currentTimeTarget.textContent = '0:00'
-      this.progressBarTarget.style.width = '0%'
+      this.resetPlayer()
       return
     }
 
@@ -148,20 +200,18 @@ export default class extends Controller {
 
     if (!videoLink) {
       console.warn('No video link found for song:', song)
-      // Try next song
       this.next()
       return
     }
 
     // Update UI
-    this.songTitleTarget.textContent = song.title || 'Unknown Title'
-    this.songArtistTarget.textContent = song.author || 'Unknown Artist'
+    this.updateSongInfo(song)
 
     // Show loading state
-    this.playIconTarget.classList.add('loading', 'hidden')
-    this.pauseIconTarget.classList.add('hidden')
+    this.showLoadingState()
 
     if (this.youTubePlayer) {
+      console.log('Loading video:', videoLink.video_id)
       // Load and play the video
       this.youTubePlayer.loadVideoById({
         videoId: videoLink.video_id,
@@ -175,6 +225,30 @@ export default class extends Controller {
         }
       }, 2000)
     }
+  }
+
+  // Helper method to update song info in UI
+  updateSongInfo(song) {
+    this.songTitleTarget.textContent = song.title || 'Unknown Title'
+    this.songArtistTarget.textContent = song.author || 'Unknown Artist'
+    this.currentTimeTarget.textContent = '0:00'
+    this.progressBarTarget.style.width = '0%'
+  }
+
+  // Helper method to show loading state
+  showLoadingState() {
+    this.playIconTarget.classList.add('loading', 'hidden')
+    this.pauseIconTarget.classList.add('hidden')
+  }
+
+  // Helper method to reset player
+  resetPlayer() {
+    this.currentTrackIndex = -1
+    this.songTitleTarget.textContent = 'No song selected'
+    this.songArtistTarget.textContent = ''
+    this.durationTarget.textContent = '0:00'
+    this.currentTimeTarget.textContent = '0:00'
+    this.progressBarTarget.style.width = '0%'
   }
 
   toggle() {
