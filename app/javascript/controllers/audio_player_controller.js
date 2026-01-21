@@ -25,6 +25,8 @@ export default class extends Controller {
     this.songs = this.songsValue
     this.progressUpdateInterval = null
     this.isDragging = false
+    this.isShuffleEnabled = false
+    this.playedSongIndices = []
 
     // Make sure we have the songs data
     if (!this.songs || !Array.isArray(this.songs)) {
@@ -219,6 +221,11 @@ export default class extends Controller {
       return
     }
 
+    // If shuffle is enabled and this song isn't already in the played list, add it
+    if (this.isShuffleEnabled && !this.playedSongIndices.includes(index)) {
+      this.playedSongIndices.push(index)
+    }
+
     // Update UI
     this.updateSongInfo(song)
 
@@ -268,8 +275,21 @@ export default class extends Controller {
 
   toggle() {
     if (this.currentTrackIndex === -1 && this.songs.length > 0) {
-      // Start playing from the first song if none is selected
-      this.playSong(0)
+      // Start playing from a random song if shuffle is enabled, otherwise first song
+      let startIndex = 0
+
+      if (this.isShuffleEnabled) {
+        // Get available song indices (songs with video links)
+        const availableIndices = this.songs
+          .map((song, index) => song.video_links?.length > 0 ? index : null)
+          .filter(index => index !== null)
+
+        if (availableIndices.length > 0) {
+          startIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)]
+        }
+      }
+
+      this.playSong(startIndex)
     } else if (this.youTubePlayer) {
       if (this.isPlaying) {
         this.youTubePlayer.pauseVideo()
@@ -282,10 +302,44 @@ export default class extends Controller {
   next() {
     if (this.songs.length === 0) return
 
-    let nextIndex = this.currentTrackIndex + 1
-    if (nextIndex >= this.songs.length) {
-      nextIndex = 0 // Loop back to first song
+    let nextIndex
+
+    if (this.isShuffleEnabled) {
+      // Get available song indices (songs with video links)
+      const availableIndices = this.songs
+        .map((song, index) => song.video_links?.length > 0 ? index : null)
+        .filter(index => index !== null)
+
+      if (availableIndices.length === 0) return
+
+      // If we've played all songs, reset the history
+      if (this.playedSongIndices.length >= availableIndices.length) {
+        this.playedSongIndices = [this.currentTrackIndex]
+      }
+
+      // Get unplayed songs
+      const unplayedIndices = availableIndices.filter(
+        index => !this.playedSongIndices.includes(index)
+      )
+
+      if (unplayedIndices.length === 0) {
+        // All songs played, start over
+        this.playedSongIndices = []
+        nextIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)]
+      } else {
+        // Pick random from unplayed songs
+        nextIndex = unplayedIndices[Math.floor(Math.random() * unplayedIndices.length)]
+      }
+
+      this.playedSongIndices.push(nextIndex)
+    } else {
+      // Sequential playback
+      nextIndex = this.currentTrackIndex + 1
+      if (nextIndex >= this.songs.length) {
+        nextIndex = 0 // Loop back to first song
+      }
     }
+
     this.playSong(nextIndex)
   }
 
@@ -345,6 +399,27 @@ export default class extends Controller {
         this.youTubePlayer.playVideo()
       }
     }
+  }
+
+  toggleShuffle() {
+    this.isShuffleEnabled = !this.isShuffleEnabled
+
+    // Reset played songs history when toggling shuffle
+    this.playedSongIndices = this.currentTrackIndex >= 0 ? [this.currentTrackIndex] : []
+
+    // Update button visual state
+    const shuffleButton = this.element.querySelector('[data-action*="toggleShuffle"]')
+    if (shuffleButton) {
+      if (this.isShuffleEnabled) {
+        shuffleButton.classList.add('btn-active', 'text-primary')
+        this.showTemporaryMessage('Reproducción aleatoria activada')
+      } else {
+        shuffleButton.classList.remove('btn-active', 'text-primary')
+        this.showTemporaryMessage('Reproducción secuencial activada')
+      }
+    }
+
+    console.log('Shuffle mode:', this.isShuffleEnabled ? 'enabled' : 'disabled')
   }
 
   // For backward compatibility
