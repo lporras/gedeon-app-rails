@@ -87,6 +87,10 @@ group :development do
   gem 'listen', '3.7.1'
 end
 
+group :production do
+  gem 'lograge'
+end
+
 group :test do
   gem "capybara"
   gem 'selenium-webdriver'
