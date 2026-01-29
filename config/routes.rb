@@ -15,5 +15,6 @@ Rails.application.routes.draw do
   api_version(module: 'api/v1', path: { value: 'api/v1' }, defaults: { format: :json }) do
     resources :songs, only: [:show, :index]
     resources :playlists, only: [:show, :index]
+    get 'audio_songs', to: 'songs#audio_songs'
   end
 end

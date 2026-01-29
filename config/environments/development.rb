@@ -61,6 +61,7 @@ Rails.application.configure do
 
   # Allow testing subdomains locally (e.g., ici-santiago.localhost:3000)
   config.hosts ||= []
+  config.hosts << "localhost" << "127.0.0.1"
   config.hosts << /.+\.localhost/
   config.hosts << /.+\.lvh\.me/
   # Allow ngrok tunnels (both legacy and new domains)
