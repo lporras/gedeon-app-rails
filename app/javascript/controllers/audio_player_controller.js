@@ -11,7 +11,8 @@ export default class extends Controller {
     'progressBar',
     'progressContainer',
     'seekHandle',
-    'tooltip'
+    'tooltip',
+    'loadingState'
   ]
 
   static values = {
@@ -19,22 +20,20 @@ export default class extends Controller {
   }
 
   connect() {
+    console.log('Audio player controller connecting...')
     this.currentTrackIndex = -1
     this.player = null
     this.isPlaying = false
-    this.songs = this.songsValue
+    this.songs = []
     this.progressUpdateInterval = null
     this.isDragging = false
     this.isShuffleEnabled = false
     this.playedSongIndices = []
+    this.songsLoaded = false
 
-    // Make sure we have the songs data
-    if (!this.songs || !Array.isArray(this.songs)) {
-      console.error('No songs data found')
-      this.songs = []
-    } else {
-      console.log('Audio player connected with', this.songs.length, 'songs')
-    }
+    console.log('Starting to load songs...')
+    // Load songs asynchronously
+    this.loadSongs()
 
     // Fix for iOS Safari/Chrome dynamic viewport
     this.fixIOSViewport()
@@ -274,6 +273,12 @@ export default class extends Controller {
   }
 
   toggle() {
+    if (!this.songsLoaded) {
+      // Songs not loaded yet, show loading message
+      this.showError('Cargando canciones...')
+      return
+    }
+
     if (this.currentTrackIndex === -1 && this.songs.length > 0) {
       // Start playing from a random song if shuffle is enabled, otherwise first song
       let startIndex = 0
@@ -589,5 +594,49 @@ export default class extends Controller {
         ticking = true
       }
     })
+  }
+
+  async loadSongs() {
+    console.log('loadSongs() called')
+    try {
+      console.log('Making request to /api/v1/audio_songs')
+      const response = await fetch('/api/v1/audio_songs')
+      console.log('Response received:', response.status, response.ok)
+
+      if (!response.ok) throw new Error('Failed to load songs')
+
+      this.songs = await response.json()
+      this.songsLoaded = true
+      console.log('Songs loaded:', this.songs.length)
+
+      // Hide loading state and enable player controls
+      this.hideLoadingState()
+      this.enablePlayerControls()
+    } catch (error) {
+      console.error('Error loading songs:', error)
+      this.showError('Failed to load songs')
+      this.hideLoadingState()
+    }
+  }
+
+  hideLoadingState() {
+    if (this.hasLoadingStateTarget) {
+      this.loadingStateTarget.classList.add('hidden')
+    }
+  }
+
+  enablePlayerControls() {
+    // Enable all player controls
+    const controls = this.element.querySelectorAll('button[disabled]')
+    controls.forEach(button => {
+      button.disabled = false
+      button.classList.remove('btn-disabled', 'opacity-50')
+    })
+  }
+
+  showError(message) {
+    // Show error message to user
+    this.songTitleTarget.textContent = 'Error'
+    this.songArtistTarget.textContent = message
   }
 }
