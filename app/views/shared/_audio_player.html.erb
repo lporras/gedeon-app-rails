@@ -128,5 +128,19 @@
   </div>
 
   <!-- YouTube Player (starts invisible, expands in video mode) -->
-  <div id="youtube-player"></div>
+  <div data-audio-player-target="videoArea" class="relative">
+    <div id="youtube-player"></div>
+    <!-- Fullscreen button (only visible in video mode) -->
+    <button
+      data-audio-player-target="fullscreenButton"
+      data-action="click->audio-player#toggleFullscreen"
+      class="hidden absolute bottom-3 right-3 btn btn-sm btn-circle bg-black/60 border-none text-white hover:bg-black/80"
+      title="Pantalla completa"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+      </svg>
+    </button>
+  </div>
 </div>

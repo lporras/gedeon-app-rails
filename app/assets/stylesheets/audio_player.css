@@ -78,15 +78,21 @@
   flex-direction: column;
 }
 
-[data-controller="audio-player"].video-mode #youtube-player {
+[data-controller="audio-player"].video-mode [data-audio-player-target="videoArea"] {
   flex: 1;
   min-height: 0;
+  order: -1; /* Video appears above the controls */
+  margin-bottom: 1rem;
+  display: flex;
+  position: relative;
+}
+
+[data-controller="audio-player"].video-mode #youtube-player {
   width: 100% !important;
   height: 100% !important;
   background: black;
   border: none;
-  order: -1; /* Video appears above the controls */
-  margin-bottom: 1rem;
+  flex: 1;
 }
 
 /* Responsive adjustments */

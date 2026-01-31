@@ -13,7 +13,9 @@ export default class extends Controller {
     'seekHandle',
     'tooltip',
     'loadingState',
-    'videoModeButton'
+    'videoModeButton',
+    'videoArea',
+    'fullscreenButton'
   ]
 
   static values = {
@@ -159,6 +161,14 @@ export default class extends Controller {
 
   onPlayerReady(event) {
     console.log('YouTube player ready')
+
+    // Ensure iframe allows fullscreen
+    if (this.youTubePlayer && this.youTubePlayer.getIframe) {
+      const iframe = this.youTubePlayer.getIframe()
+      iframe.setAttribute('allowfullscreen', '')
+      iframe.setAttribute('allow', 'autoplay; fullscreen')
+    }
+
     // Start progress update loop
     this.startProgressUpdate()
 
@@ -452,6 +462,11 @@ export default class extends Controller {
     // Expand the entire player to full viewport with video visible
     this.element.classList.add('video-mode')
 
+    // Show fullscreen button only if the browser supports it
+    if (this.hasFullscreenButtonTarget && (document.fullscreenEnabled || document.webkitFullscreenEnabled)) {
+      this.fullscreenButtonTarget.classList.remove('hidden')
+    }
+
     // Prevent scrolling behind video
     document.body.classList.add('overflow-hidden')
   }
@@ -460,8 +475,31 @@ export default class extends Controller {
     // Collapse back to audio-only bar
     this.element.classList.remove('video-mode')
 
+    // Hide fullscreen button
+    if (this.hasFullscreenButtonTarget) {
+      this.fullscreenButtonTarget.classList.add('hidden')
+    }
+
     // Restore body scrolling
     document.body.classList.remove('overflow-hidden')
+  }
+
+  toggleFullscreen() {
+    const fullscreenEl = document.fullscreenElement || document.webkitFullscreenElement
+    if (fullscreenEl) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen()
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen()
+      }
+    } else if (this.hasVideoAreaTarget) {
+      const el = this.videoAreaTarget
+      if (el.requestFullscreen) {
+        el.requestFullscreen()
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen()
+      }
+    }
   }
 
   // For backward compatibility
