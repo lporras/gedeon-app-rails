@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.2.9'
+ruby '3.4.5'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 7.0.5'
@@ -55,6 +55,15 @@ gem 'inherited_resources', '1.13.1'
 gem 'ffi', '~> 1.16'
 gem 'thor', '1.2.1'
 gem 'formtastic', '4.0.0.rc1'
+gem 'mutex_m'
+gem 'bigdecimal'
+gem 'drb'
+gem 'base64'
+gem 'observer'
+gem 'benchmark'
+gem 'ostruct'
+gem 'csv'
+gem 'reline'
 gem 'net-smtp', '0.3.3', require: false
 gem 'net-imap', '0.3.6', require: false
 gem 'net-pop', '0.1.2', require: false

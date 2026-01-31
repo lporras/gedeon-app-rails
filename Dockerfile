@@ -1,5 +1,5 @@
 # Usa una imagen de Ruby 3.2.9 y establece el directorio de trabajo
-FROM --platform=linux/amd64 ruby:3.2.9-bullseye
+FROM --platform=linux/amd64 ruby:3.4.5-bullseye
 RUN mkdir /holymusic-app-rails
 WORKDIR /holymusic-app-rails
 
