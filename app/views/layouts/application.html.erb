@@ -5,7 +5,8 @@
     <%= csp_meta_tag %>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#0b1020" />
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <%# apple-mobile-web-app-capable is declared via the manifest (display: standalone).
+        Having it as a meta tag causes iOS to reload the page on orientation change. %>
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="manifest" href="/app/manifest.webmanifest">
     <!-- Nunito font -->

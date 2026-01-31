@@ -14,6 +14,7 @@ import ChordproPreviewController from "./chordpro_preview_controller";
 import TabsController from "./tabs_controller"
 import PlaylistChordsController from "./playlist_chords_controller";
 import AudioPlayerController from "./audio_player_controller";
+import TurboModalController from "./turbo_modal_controller";
 
 // Configure Stimulus development experience
 application.debug = process.env.NODE_ENV === 'development';
@@ -26,5 +27,6 @@ application.register("chordpro-preview", ChordproPreviewController);
 application.register("tabs", TabsController);
 application.register("playlist-chords", PlaylistChordsController);
 application.register("audio-player", AudioPlayerController);
+application.register("turbo-modal", TurboModalController);
 
 export default application;

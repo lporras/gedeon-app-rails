@@ -46,225 +46,29 @@
     <% end %>
 
     <% if song.chordpro_content.present? %>
-      <button
-        class="btn btn-xs btn-outline btn-primary pointer-events-auto flex items-center gap-1"
-        onclick="chords_modal_<%= song.id %>.showModal()"
-        type="button">
+      <a
+        href="<%= song_chords_modal_path(song) %>"
+        data-turbo-frame="modal"
+        class="btn btn-xs btn-outline btn-primary pointer-events-auto flex items-center gap-1">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M9 18V5l12-2v13"></path>
           <circle cx="6" cy="18" r="3"></circle>
           <circle cx="18" cy="16" r="3"></circle>
         </svg>
         <span class="hidden md:inline">Acordes</span>
-      </button>
+      </a>
     <% end %>
 
     <% if song.video_links.any? %>
-      <button
-        class="btn btn-xs btn-outline btn-secondary pointer-events-auto flex items-center gap-1"
-        onclick="video_modal_<%= song.id %>.showModal()"
-        type="button">
+      <a
+        href="<%= song_video_modal_path(song) %>"
+        data-turbo-frame="modal"
+        class="btn btn-xs btn-outline btn-secondary pointer-events-auto flex items-center gap-1">
         <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
           <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
         </svg>
         <span class="hidden md:inline">Video</span>
-      </button>
+      </a>
     <% end %>
   </div>
 </div>
-
-<!-- Chords Modal -->
-<% if song.chordpro_content.present? %>
-  <dialog id="chords_modal_<%= song.id %>" class="modal">
-    <div class="modal-box max-w-4xl w-full">
-      <form method="dialog">
-        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-      </form>
-
-      <h3 class="font-bold text-lg mb-4 text-base-content"><%= song.title %> - Acordes</h3>
-
-      <!-- ChordPro Preview Container -->
-      <div data-controller="chordpro-preview">
-        <textarea
-          style="display: none;"
-          data-chordpro-preview-target="input"><%= song.chordpro_content %></textarea>
-
-        <div
-          data-chordpro-preview-target="preview"
-          class="chordpro-modal-preview">
-          <!-- ChordPro content will be rendered here -->
-        </div>
-      </div>
-
-      <div class="modal-action">
-        <form method="dialog">
-          <button class="btn btn-primary">Cerrar</button>
-        </form>
-      </div>
-    </div>
-    <form method="dialog" class="modal-backdrop">
-      <button>close</button>
-    </form>
-  </dialog>
-<% end %>
-
-<!-- Video Modal -->
-<% if song.video_links.any? %>
-  <dialog id="video_modal_<%= song.id %>" class="modal">
-    <div class="modal-box max-w-5xl w-full">
-      <form method="dialog">
-        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-      </form>
-
-      <h3 class="font-bold text-lg mb-4 text-base-content"><%= song.title %> - Videos</h3>
-
-      <% if song.video_links.count > 1 %>
-        <!-- Tabs for multiple videos -->
-        <div role="tablist" class="tabs tabs-bordered mb-4">
-          <% song.video_links.each_with_index do |video_link, index| %>
-            <input
-              type="radio"
-              name="video_tabs_<%= song.id %>"
-              role="tab"
-              class="tab"
-              aria-label="Video <%= index + 1 %>"
-              <%= 'checked' if index == 0 %>
-              data-video-tab="<%= song.id %>_<%= index %>" />
-          <% end %>
-        </div>
-
-        <!-- Video containers -->
-        <% song.video_links.each_with_index do |video_link, index| %>
-          <div
-            class="video-container"
-            data-video-content="<%= song.id %>_<%= index %>"
-            style="<%= 'display: none;' unless index == 0 %>">
-            <div class="w-full" style="aspect-ratio: 16/9; min-height: 400px;">
-              <% if video_link.provider_youtube? %>
-                <iframe
-                  class="video-iframe"
-                  width="100%"
-                  height="100%"
-                  data-src="https://www.youtube.com/embed/<%= video_link.video_id %>"
-                  <%= 'src="https://www.youtube.com/embed/' + video_link.video_id + '"' if index == 0 %>
-                  frameborder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen>
-                </iframe>
-              <% elsif video_link.provider_vimeo? %>
-                <iframe
-                  class="video-iframe"
-                  width="100%"
-                  height="100%"
-                  data-src="https://player.vimeo.com/video/<%= video_link.video_id %>"
-                  <%= 'src="https://player.vimeo.com/video/' + video_link.video_id + '"' if index == 0 %>
-                  frameborder="0"
-                  allow="autoplay; fullscreen; picture-in-picture"
-                  allowfullscreen>
-                </iframe>
-              <% end %>
-            </div>
-          </div>
-        <% end %>
-      <% else %>
-        <!-- Single video - no tabs needed -->
-        <% video_link = song.video_links.first %>
-        <div class="w-full" style="aspect-ratio: 16/9; min-height: 400px;">
-          <% if video_link.provider_youtube? %>
-            <iframe
-              class="video-iframe"
-              width="100%"
-              height="100%"
-              data-src="https://www.youtube.com/embed/<%= video_link.video_id %>"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen>
-            </iframe>
-          <% elsif video_link.provider_vimeo? %>
-            <iframe
-              class="video-iframe"
-              width="100%"
-              height="100%"
-              data-src="https://player.vimeo.com/video/<%= video_link.video_id %>"
-              frameborder="0"
-              allow="autoplay; fullscreen; picture-in-picture"
-              allowfullscreen>
-            </iframe>
-          <% end %>
-        </div>
-      <% end %>
-
-      <div class="modal-action">
-        <form method="dialog">
-          <button class="btn btn-primary">Cerrar</button>
-        </form>
-      </div>
-    </div>
-    <form method="dialog" class="modal-backdrop">
-      <button>close</button>
-    </form>
-  </dialog>
-
-  <script>
-    (function() {
-      const modal = document.getElementById('video_modal_<%= song.id %>');
-      if (modal) {
-        const videoTabs = modal.querySelectorAll('[data-video-tab]');
-        const videoContainers = modal.querySelectorAll('[data-video-content]');
-
-        // Handle tab switching for multiple videos
-        videoTabs.forEach(tab => {
-          tab.addEventListener('change', function() {
-            if (this.checked) {
-              const targetId = this.dataset.videoTab;
-
-              // Hide all video containers and stop their videos
-              videoContainers.forEach(container => {
-                const iframe = container.querySelector('.video-iframe');
-                if (container.dataset.videoContent !== targetId) {
-                  container.style.display = 'none';
-                  // Stop video by removing and re-adding src
-                  if (iframe && iframe.src) {
-                    const currentSrc = iframe.src;
-                    iframe.src = '';
-                    iframe.dataset.pausedSrc = currentSrc;
-                  }
-                } else {
-                  container.style.display = 'block';
-                  // Load video if not already loaded
-                  if (iframe && !iframe.src && iframe.dataset.src) {
-                    iframe.src = iframe.dataset.src;
-                  } else if (iframe && iframe.dataset.pausedSrc) {
-                    iframe.src = iframe.dataset.pausedSrc;
-                    delete iframe.dataset.pausedSrc;
-                  }
-                }
-              });
-            }
-          });
-        });
-
-        // Load first iframe when modal opens (for single video case)
-        const openButton = document.querySelector('[onclick="video_modal_<%= song.id %>.showModal()"]');
-        if (openButton) {
-          openButton.addEventListener('click', function() {
-            // Only load the first video initially
-            const firstIframe = modal.querySelector('.video-iframe');
-            if (firstIframe && firstIframe.dataset.src && !firstIframe.src) {
-              firstIframe.src = firstIframe.dataset.src;
-            }
-          });
-        }
-
-        // Unload all iframes when modal closes
-        modal.addEventListener('close', function() {
-          const iframes = this.querySelectorAll('.video-iframe');
-          iframes.forEach(iframe => {
-            iframe.src = '';
-            delete iframe.dataset.pausedSrc;
-          });
-        });
-      }
-    })();
-  </script>
-<% end %>
