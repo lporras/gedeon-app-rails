@@ -87,6 +87,20 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
           </svg>
         </button>
+
+        <!-- Video Mode Toggle Button -->
+        <button
+          data-action="click->audio-player#toggleVideoMode"
+          data-audio-player-target="videoModeButton"
+          class="btn btn-ghost btn-sm btn-circle opacity-50"
+          title="Modo video"
+          disabled
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+        </button>
       </div>
     </div>
 
@@ -113,6 +127,20 @@
     </div>
   </div>
 
-  <!-- YouTube Player (hidden) -->
-  <div id="youtube-player" class="hidden"></div>
+  <!-- YouTube Player (starts invisible, expands in video mode) -->
+  <div data-audio-player-target="videoArea" class="relative">
+    <div id="youtube-player"></div>
+    <!-- Fullscreen button (only visible in video mode) -->
+    <button
+      data-audio-player-target="fullscreenButton"
+      data-action="click->audio-player#toggleFullscreen"
+      class="hidden absolute bottom-3 right-3 btn btn-sm btn-circle bg-black/60 border-none text-white hover:bg-black/80"
+      title="Pantalla completa"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+      </svg>
+    </button>
+  </div>
 </div>

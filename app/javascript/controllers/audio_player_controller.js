@@ -12,7 +12,10 @@ export default class extends Controller {
     'progressContainer',
     'seekHandle',
     'tooltip',
-    'loadingState'
+    'loadingState',
+    'videoModeButton',
+    'videoArea',
+    'fullscreenButton'
   ]
 
   static values = {
@@ -30,6 +33,7 @@ export default class extends Controller {
     this.isShuffleEnabled = false
     this.playedSongIndices = []
     this.songsLoaded = false
+    this.isVideoMode = false
 
     console.log('Starting to load songs...')
     // Load songs asynchronously
@@ -49,6 +53,9 @@ export default class extends Controller {
 
   disconnect() {
     // Clean up event listeners
+    if (this.isVideoMode) {
+      document.body.classList.remove('overflow-hidden')
+    }
     if (this.boundHandleKeyDown) {
       document.removeEventListener('keydown', this.boundHandleKeyDown)
     }
@@ -154,6 +161,14 @@ export default class extends Controller {
 
   onPlayerReady(event) {
     console.log('YouTube player ready')
+
+    // Ensure iframe allows fullscreen
+    if (this.youTubePlayer && this.youTubePlayer.getIframe) {
+      const iframe = this.youTubePlayer.getIframe()
+      iframe.setAttribute('allowfullscreen', '')
+      iframe.setAttribute('allow', 'autoplay; fullscreen')
+    }
+
     // Start progress update loop
     this.startProgressUpdate()
 
@@ -422,6 +437,69 @@ export default class extends Controller {
     }
 
     console.log('Shuffle mode:', this.isShuffleEnabled ? 'enabled' : 'disabled')
+  }
+
+  toggleVideoMode() {
+    this.isVideoMode = !this.isVideoMode
+
+    if (this.isVideoMode) {
+      this.enterVideoMode()
+    } else {
+      this.exitVideoMode()
+    }
+
+    // Update button visual state
+    if (this.hasVideoModeButtonTarget) {
+      if (this.isVideoMode) {
+        this.videoModeButtonTarget.classList.add('btn-active', 'text-primary')
+      } else {
+        this.videoModeButtonTarget.classList.remove('btn-active', 'text-primary')
+      }
+    }
+  }
+
+  enterVideoMode() {
+    // Expand the entire player to full viewport with video visible
+    this.element.classList.add('video-mode')
+
+    // Show fullscreen button only if the browser supports it
+    if (this.hasFullscreenButtonTarget && (document.fullscreenEnabled || document.webkitFullscreenEnabled)) {
+      this.fullscreenButtonTarget.classList.remove('hidden')
+    }
+
+    // Prevent scrolling behind video
+    document.body.classList.add('overflow-hidden')
+  }
+
+  exitVideoMode() {
+    // Collapse back to audio-only bar
+    this.element.classList.remove('video-mode')
+
+    // Hide fullscreen button
+    if (this.hasFullscreenButtonTarget) {
+      this.fullscreenButtonTarget.classList.add('hidden')
+    }
+
+    // Restore body scrolling
+    document.body.classList.remove('overflow-hidden')
+  }
+
+  toggleFullscreen() {
+    const fullscreenEl = document.fullscreenElement || document.webkitFullscreenElement
+    if (fullscreenEl) {
+      if (document.exitFullscreen) {
+        document.exitFullscreen()
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen()
+      }
+    } else if (this.hasVideoAreaTarget) {
+      const el = this.videoAreaTarget
+      if (el.requestFullscreen) {
+        el.requestFullscreen()
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen()
+      }
+    }
   }
 
   // For backward compatibility
