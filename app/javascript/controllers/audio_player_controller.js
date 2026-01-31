@@ -12,7 +12,8 @@ export default class extends Controller {
     'progressContainer',
     'seekHandle',
     'tooltip',
-    'loadingState'
+    'loadingState',
+    'videoModeButton'
   ]
 
   static values = {
@@ -30,6 +31,7 @@ export default class extends Controller {
     this.isShuffleEnabled = false
     this.playedSongIndices = []
     this.songsLoaded = false
+    this.isVideoMode = false
 
     console.log('Starting to load songs...')
     // Load songs asynchronously
@@ -49,6 +51,9 @@ export default class extends Controller {
 
   disconnect() {
     // Clean up event listeners
+    if (this.isVideoMode) {
+      document.body.classList.remove('overflow-hidden')
+    }
     if (this.boundHandleKeyDown) {
       document.removeEventListener('keydown', this.boundHandleKeyDown)
     }
@@ -422,6 +427,41 @@ export default class extends Controller {
     }
 
     console.log('Shuffle mode:', this.isShuffleEnabled ? 'enabled' : 'disabled')
+  }
+
+  toggleVideoMode() {
+    this.isVideoMode = !this.isVideoMode
+
+    if (this.isVideoMode) {
+      this.enterVideoMode()
+    } else {
+      this.exitVideoMode()
+    }
+
+    // Update button visual state
+    if (this.hasVideoModeButtonTarget) {
+      if (this.isVideoMode) {
+        this.videoModeButtonTarget.classList.add('btn-active', 'text-primary')
+      } else {
+        this.videoModeButtonTarget.classList.remove('btn-active', 'text-primary')
+      }
+    }
+  }
+
+  enterVideoMode() {
+    // Expand the entire player to full viewport with video visible
+    this.element.classList.add('video-mode')
+
+    // Prevent scrolling behind video
+    document.body.classList.add('overflow-hidden')
+  }
+
+  exitVideoMode() {
+    // Collapse back to audio-only bar
+    this.element.classList.remove('video-mode')
+
+    // Restore body scrolling
+    document.body.classList.remove('overflow-hidden')
   }
 
   // For backward compatibility

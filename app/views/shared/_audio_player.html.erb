@@ -87,6 +87,20 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
           </svg>
         </button>
+
+        <!-- Video Mode Toggle Button -->
+        <button
+          data-action="click->audio-player#toggleVideoMode"
+          data-audio-player-target="videoModeButton"
+          class="btn btn-ghost btn-sm btn-circle opacity-50"
+          title="Modo video"
+          disabled
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+        </button>
       </div>
     </div>
 
@@ -113,6 +127,6 @@
     </div>
   </div>
 
-  <!-- YouTube Player (hidden) -->
-  <div id="youtube-player" class="hidden"></div>
+  <!-- YouTube Player (starts invisible, expands in video mode) -->
+  <div id="youtube-player"></div>
 </div>

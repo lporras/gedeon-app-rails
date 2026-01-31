@@ -70,6 +70,25 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Video mode - expands the audio player to full viewport */
+[data-controller="audio-player"].video-mode {
+  top: 0 !important;
+  z-index: 9999 !important;
+  display: flex;
+  flex-direction: column;
+}
+
+[data-controller="audio-player"].video-mode #youtube-player {
+  flex: 1;
+  min-height: 0;
+  width: 100% !important;
+  height: 100% !important;
+  background: black;
+  border: none;
+  order: -1; /* Video appears above the controls */
+  margin-bottom: 1rem;
+}
+
 /* Responsive adjustments */
 @media (max-width: 640px) {
   [data-controller="audio-player"] {
