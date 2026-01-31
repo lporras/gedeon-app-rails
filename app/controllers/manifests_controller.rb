@@ -49,7 +49,7 @@ class ManifestsController < ApplicationController
       start_url: '/app/',
       scope: '/app/',
       display: 'standalone',
-      orientation: 'portrait',
+      orientation: 'any',
       background_color: '#0b1020',
       theme_color: '#0b1020',
       icons: icons

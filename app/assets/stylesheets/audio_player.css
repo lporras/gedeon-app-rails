@@ -8,18 +8,6 @@
   right: 0;
 }
 
-/* iOS Safari viewport fix */
-@supports (-webkit-touch-callout: none) {
-  html {
-    height: -webkit-fill-available;
-  }
-
-  body {
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
-  }
-}
-
 [data-controller="audio-player"]:not(.minimized) {
   transform: translateY(0);
 }

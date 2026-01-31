@@ -1,6 +1,6 @@
 // Simple service worker scoped to /app/
 // Caches core assets and serves them offline. Adjust as needed.
-const VERSION = 'v1';
+const VERSION = 'v3';
 const CACHE_NAME = `app-cache-${VERSION}`;
 const CORE_ASSETS = [
   '/app/',
@@ -25,6 +25,9 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   // Only handle GET requests under our scope
   if (request.method !== 'GET' || !request.url.includes('/app/')) return;
+
+  // Skip navigation requests (HTML pages) to avoid reload loops on iOS orientation change
+  if (request.mode === 'navigate') return;
 
   event.respondWith(
     caches.match(request).then((cached) => {
