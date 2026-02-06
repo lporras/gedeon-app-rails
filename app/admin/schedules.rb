@@ -119,6 +119,9 @@ ActiveAdmin.register Schedule do
       }
     end
 
+    # Persist the presentation state so presenter can restore on refresh
+    schedule.update_column(:presenter_state, payload.merge(verse_index: 1))
+
     ActionCable.server.broadcast("schedule_presenter_#{schedule.id}", payload)
     render json: payload
   end
@@ -126,10 +129,17 @@ ActiveAdmin.register Schedule do
   # Navigate to a specific verse
   member_action :navigate_to, method: :post do
     schedule = resource
+    verse_index = params[:verse_index].to_i
     payload = {
       action: "navigate_to",
-      verse_index: params[:verse_index].to_i
+      verse_index: verse_index
     }
+
+    # Update persisted verse_index
+    if schedule.presenter_state.present?
+      schedule.update_column(:presenter_state, schedule.presenter_state.merge("verse_index" => verse_index))
+    end
+
     ActionCable.server.broadcast("schedule_presenter_#{schedule.id}", payload)
     render json: { success: true }
   end
@@ -138,8 +148,18 @@ ActiveAdmin.register Schedule do
   member_action :black_screen, method: :post do
     schedule = resource
     payload = { action: "black" }
+
+    # Persist black state
+    schedule.update_column(:presenter_state, { action: "black" })
+
     ActionCable.server.broadcast("schedule_presenter_#{schedule.id}", payload)
     render json: { success: true }
+  end
+
+  # Current presenter state (for refresh)
+  member_action :current_state, method: :get do
+    schedule = resource
+    render json: (schedule.presenter_state.presence || { action: "black" })
   end
 
   # Bible lookup: books

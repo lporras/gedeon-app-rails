@@ -2,11 +2,12 @@
 #
 # Table name: schedules
 #
-#  id         :bigint           not null, primary key
-#  name       :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  account_id :bigint
+#  id              :bigint           not null, primary key
+#  name            :string
+#  presenter_state :jsonb
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  account_id      :bigint
 #
 # Indexes
 #

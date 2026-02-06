@@ -1,6 +1,3 @@
-<section>
-  <h2><%= @schedule.name %></h2>
-</section>
 <section data-background-color="#000000">
 </section>
 
@@ -14,6 +11,7 @@
     {
       connected: function() {
         console.log('Connected to SchedulePresenterChannel');
+        restoreState();
       },
       received: function(data) {
         console.log('Received:', data);
@@ -68,9 +66,10 @@
 
     // Re-initialize Reveal with the new content
     Reveal.sync();
+    var targetIndex = data.verse_index || 1;
     setTimeout(function() {
-      Reveal.slide(0, 1);
-      console.log('Navigated to first verse');
+      Reveal.slide(0, targetIndex);
+      console.log('Navigated to verse index:', targetIndex);
     }, 100);
   }
 
@@ -80,9 +79,31 @@
   }
 
   function handleBlack() {
-    // Navigate to last sub-slide (black)
-    var totalVertical = document.querySelectorAll('.reveal .slides > section > section').length;
-    Reveal.slide(0, totalVertical - 1);
+    var slidesContainer = document.querySelector('.reveal .slides');
+    slidesContainer.innerHTML = '';
+    var blackSection = document.createElement('section');
+    blackSection.setAttribute('data-background-color', '#000000');
+    blackSection.innerHTML = '&nbsp;';
+    slidesContainer.appendChild(blackSection);
+    Reveal.sync();
+    Reveal.slide(0, 0);
+  }
+
+  function restoreState() {
+    var url = '<%= current_state_admin_schedule_path(@schedule) %>';
+    fetch(url, { headers: { 'Accept': 'application/json' } })
+      .then(function(r) { return r.json(); })
+      .then(function(state) {
+        console.log('Restoring state:', state);
+        if (state.action === 'present' && state.verses) {
+          handlePresent(state);
+        } else if (state.action === 'black') {
+          handleBlack();
+        }
+      })
+      .catch(function(err) {
+        console.log('No saved state to restore:', err);
+      });
   }
 
   function escapeHtml(text) {
