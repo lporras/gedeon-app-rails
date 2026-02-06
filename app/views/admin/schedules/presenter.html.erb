@@ -1,0 +1,88 @@
+<section>
+  <h2><%= @schedule.name %></h2>
+</section>
+<section data-background-color="#000000">
+</section>
+
+<script>
+(function() {
+  var scheduleId = '<%= @schedule.id %>';
+  console.log('Presenter loaded for schedule:', scheduleId);
+
+  App.schedulePresenter = App.cable.subscriptions.create(
+    { channel: "SchedulePresenterChannel", schedule_id: scheduleId },
+    {
+      connected: function() {
+        console.log('Connected to SchedulePresenterChannel');
+      },
+      received: function(data) {
+        console.log('Received:', data);
+        if (data.action === "present") {
+          handlePresent(data);
+        } else if (data.action === "navigate_to") {
+          handleNavigateTo(data);
+        } else if (data.action === "black") {
+          handleBlack();
+        }
+      }
+    }
+  );
+
+  function handlePresent(data) {
+    var slidesContainer = document.querySelector('.reveal .slides');
+    slidesContainer.innerHTML = '';
+
+    // Vertical slide stack: title + verses + black
+    var parentSection = document.createElement('section');
+
+    // Title sub-slide
+    var titleSlide = document.createElement('section');
+    titleSlide.innerHTML = '<h2>' + escapeHtml(data.title) + '</h2>';
+    parentSection.appendChild(titleSlide);
+
+    // Verse sub-slides (max 4 lines each)
+    var maxLines = 4;
+    data.verses.forEach(function(verse) {
+      var lines = verse.split(/\n/);
+      for (var i = 0; i < lines.length; i += maxLines) {
+        var chunk = lines.slice(i, i + maxLines);
+        var slide = document.createElement('section');
+        slide.innerHTML = '<p>' + chunk.map(function(l) { return escapeHtml(l); }).join('<br>') + '</p>';
+        parentSection.appendChild(slide);
+      }
+    });
+
+    // Black sub-slide at end
+    var blackSlide = document.createElement('section');
+    blackSlide.setAttribute('data-background-color', '#000000');
+    blackSlide.innerHTML = '&nbsp;';
+    parentSection.appendChild(blackSlide);
+
+    slidesContainer.appendChild(parentSection);
+
+    // Re-initialize Reveal with the new content
+    Reveal.sync();
+    setTimeout(function() {
+      Reveal.slide(0, 1);
+      console.log('Navigated to first verse');
+    }, 100);
+  }
+
+  function handleNavigateTo(data) {
+    console.log('Navigate to verse_index:', data.verse_index);
+    Reveal.slide(0, data.verse_index);
+  }
+
+  function handleBlack() {
+    // Navigate to last sub-slide (black)
+    var totalVertical = document.querySelectorAll('.reveal .slides > section > section').length;
+    Reveal.slide(0, totalVertical - 1);
+  }
+
+  function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(text));
+    return div.innerHTML;
+  }
+})();
+</script>

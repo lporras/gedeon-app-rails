@@ -1,0 +1,124 @@
+<div class="schedule-editor"
+     data-controller="schedule-editor"
+     data-schedule-editor-schedule-id-value="<%= schedule.id %>"
+     data-schedule-editor-search-songs-url-value="<%= search_songs_admin_schedules_path %>"
+     data-schedule-editor-search-scriptures-url-value="<%= search_scriptures_admin_schedules_path %>"
+     data-schedule-editor-add-item-url-value="<%= add_item_admin_schedule_path(schedule) %>"
+     data-schedule-editor-remove-item-url-value="<%= remove_item_admin_schedule_path(schedule) %>"
+     data-schedule-editor-reorder-items-url-value="<%= reorder_items_admin_schedule_path(schedule) %>"
+     data-schedule-editor-present-item-url-value="<%= present_item_admin_schedule_path(schedule) %>"
+     data-schedule-editor-navigate-to-url-value="<%= navigate_to_admin_schedule_path(schedule) %>"
+     data-schedule-editor-black-screen-url-value="<%= black_screen_admin_schedule_path(schedule) %>">
+
+  <!-- Top bar -->
+  <div class="schedule-editor__toolbar">
+    <h2><%= schedule.name %></h2>
+    <div class="schedule-editor__toolbar-actions">
+      <button type="button"
+              class="schedule-editor__btn schedule-editor__btn--black"
+              data-action="click->schedule-editor#blackScreen">
+        Black Screen
+      </button>
+    </div>
+  </div>
+
+  <!-- 3-column layout -->
+  <div class="schedule-editor__columns">
+
+    <!-- Left: Songs -->
+    <div class="schedule-editor__col">
+      <div class="panel">
+        <h3>Songs</h3>
+        <div class="panel_contents">
+          <input type="text"
+                 placeholder="Search songs..."
+                 class="schedule-editor__search"
+                 data-schedule-editor-target="songSearch"
+                 data-action="input->schedule-editor#searchSongs" />
+          <div class="schedule-editor__list"
+               data-schedule-editor-target="songList">
+            <!-- Songs loaded via JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center: Schedule -->
+    <div class="schedule-editor__col schedule-editor__col--center">
+      <div class="panel">
+        <h3>Schedule Items</h3>
+        <div class="panel_contents">
+          <div class="schedule-editor__drop-zone"
+               data-schedule-editor-target="scheduleList"
+               data-action="dragover->schedule-editor#dragOver drop->schedule-editor#drop">
+            <% schedule.schedule_items.includes(:item).each do |si| %>
+              <div class="schedule-editor__item"
+                   draggable="true"
+                   data-schedule-item-id="<%= si.id %>"
+                   data-item-type="<%= si.item_type %>"
+                   data-item-id="<%= si.item_id %>"
+                   data-action="dragstart->schedule-editor#dragStartItem">
+                <span class="schedule-editor__item-icon">
+                  <%= si.item_type == 'Song' ? '♪' : '📖' %>
+                </span>
+                <span class="schedule-editor__item-title">
+                  <%= si.item.respond_to?(:title) ? si.item.title : si.item.bible_reference %>
+                </span>
+                <div class="schedule-editor__item-actions">
+                  <button type="button"
+                          class="schedule-editor__btn schedule-editor__btn--present"
+                          data-action="click->schedule-editor#presentItem"
+                          data-schedule-item-id="<%= si.id %>">
+                    Present Now
+                  </button>
+                  <button type="button"
+                          class="schedule-editor__btn schedule-editor__btn--remove"
+                          data-action="click->schedule-editor#removeItem"
+                          data-schedule-item-id="<%= si.id %>">
+                    &times;
+                  </button>
+                </div>
+              </div>
+            <% end %>
+            <div class="schedule-editor__drop-placeholder" data-schedule-editor-target="dropPlaceholder">
+              Drag songs or scriptures here
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Scriptures -->
+    <div class="schedule-editor__col">
+      <div class="panel">
+        <h3>Scriptures</h3>
+        <div class="panel_contents">
+          <input type="text"
+                 placeholder="Search scriptures..."
+                 class="schedule-editor__search"
+                 data-schedule-editor-target="scriptureSearch"
+                 data-action="input->schedule-editor#searchScriptures" />
+          <div class="schedule-editor__list"
+               data-schedule-editor-target="scriptureList">
+            <!-- Scriptures loaded via JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preview pane -->
+  <div class="schedule-editor__preview-section">
+    <div class="panel">
+      <h3>Preview</h3>
+      <div class="panel_contents">
+        <div class="schedule-editor__preview"
+             data-schedule-editor-target="preview"
+             data-action="keydown->schedule-editor#handlePreviewKeydown"
+             tabindex="0">
+          <p class="schedule-editor__preview-empty">Select an item and click "Present Now" to preview</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
