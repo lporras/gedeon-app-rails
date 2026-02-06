@@ -110,11 +110,12 @@ ActiveAdmin.register Schedule do
         verses: verses
       }
     else
+      scripture_verses = item.content.split(/\n/).map(&:strip).reject(&:blank?)
       payload = {
         action: "present",
         type: "scripture",
         title: item.bible_reference,
-        verses: [item.content]
+        verses: scripture_verses
       }
     end
 

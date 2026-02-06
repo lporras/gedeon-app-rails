@@ -46,6 +46,18 @@
       }
     }
 
+    &--add {
+      background: #3498db;
+      color: #fff;
+      font-size: 0.7em;
+      padding: 3px 8px;
+      flex-shrink: 0;
+
+      &:hover {
+        background: #2980b9;
+      }
+    }
+
     &--remove {
       background: #e74c3c;
       color: #fff;
@@ -117,6 +129,14 @@
 
   &__draggable-icon {
     font-size: 1.1em;
+    flex-shrink: 0;
+  }
+
+  &__draggable-title {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &__empty {

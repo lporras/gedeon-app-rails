@@ -40,14 +40,15 @@
     titleSlide.innerHTML = '<h2>' + escapeHtml(data.title) + '</h2>';
     parentSection.appendChild(titleSlide);
 
-    // Verse sub-slides (max 4 lines each)
+    // Verse sub-slides
     var maxLines = 4;
     data.verses.forEach(function(verse) {
       var lines = verse.split(/\n/);
       for (var i = 0; i < lines.length; i += maxLines) {
         var chunk = lines.slice(i, i + maxLines);
         var slide = document.createElement('section');
-        slide.innerHTML = '<p>' + chunk.map(function(l) { return escapeHtml(l); }).join('<br>') + '</p>';
+        var text = chunk.map(function(l) { return escapeHtml(l); }).join('<br>');
+        slide.innerHTML = '<p>' + text + '</p>';
         parentSection.appendChild(slide);
       }
     });

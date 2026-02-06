@@ -50,9 +50,12 @@ class ScheduleEditorController extends Stimulus.Controller {
     songs.forEach(function(song) {
       html += '<div class="schedule-editor__draggable" draggable="true" ' +
               'data-item-type="Song" data-item-id="' + song.id + '" ' +
-              'data-action="dragstart->schedule-editor#dragStartNew">' +
+              'data-action="dragstart->schedule-editor#dragStartNew dblclick->schedule-editor#addFromList">' +
               '<span class="schedule-editor__draggable-icon">♪</span> ' +
-              '<span>' + escapeHtml(song.title) + '</span>' +
+              '<span class="schedule-editor__draggable-title">' + escapeHtml(song.title) + '</span>' +
+              '<button type="button" class="schedule-editor__btn schedule-editor__btn--add" ' +
+              'data-action="click->schedule-editor#addFromList" ' +
+              'data-item-type="Song" data-item-id="' + song.id + '">+ Add</button>' +
               '</div>';
     });
     if (songs.length === 0) {
@@ -81,15 +84,27 @@ class ScheduleEditorController extends Stimulus.Controller {
     scriptures.forEach(function(scripture) {
       html += '<div class="schedule-editor__draggable" draggable="true" ' +
               'data-item-type="Scripture" data-item-id="' + scripture.id + '" ' +
-              'data-action="dragstart->schedule-editor#dragStartNew">' +
+              'data-action="dragstart->schedule-editor#dragStartNew dblclick->schedule-editor#addFromList">' +
               '<span class="schedule-editor__draggable-icon">📖</span> ' +
-              '<span>' + escapeHtml(scripture.bible_reference) + '</span>' +
+              '<span class="schedule-editor__draggable-title">' + escapeHtml(scripture.bible_reference) + '</span>' +
+              '<button type="button" class="schedule-editor__btn schedule-editor__btn--add" ' +
+              'data-action="click->schedule-editor#addFromList" ' +
+              'data-item-type="Scripture" data-item-id="' + scripture.id + '">+ Add</button>' +
               '</div>';
     });
     if (scriptures.length === 0) {
       html = '<p class="schedule-editor__empty">No scriptures found</p>';
     }
     this.scriptureListTarget.innerHTML = html;
+  }
+
+  // --- Add from list (button click or double-click) ---
+  addFromList(event) {
+    event.preventDefault();
+    var el = event.currentTarget;
+    var itemType = el.dataset.itemType || el.closest('.schedule-editor__draggable').dataset.itemType;
+    var itemId = el.dataset.itemId || el.closest('.schedule-editor__draggable').dataset.itemId;
+    this.addItem(itemType, itemId);
   }
 
   // --- Drag & Drop ---
