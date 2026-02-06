@@ -48,7 +48,12 @@
         var chunk = lines.slice(i, i + maxLines);
         var slide = document.createElement('section');
         var text = chunk.map(function(l) { return escapeHtml(l); }).join('<br>');
-        slide.innerHTML = '<p>' + text + '</p>';
+        if (data.type === 'scripture') {
+          slide.innerHTML = '<p>' + text + '</p>' +
+            '<p class="scripture-ref">' + escapeHtml(data.title) + '</p>';
+        } else {
+          slide.innerHTML = '<p>' + text + '</p>';
+        }
         parentSection.appendChild(slide);
       }
     });
