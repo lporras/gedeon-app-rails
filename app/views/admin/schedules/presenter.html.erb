@@ -19,6 +19,8 @@
           handlePresent(data);
         } else if (data.action === "navigate_to") {
           handleNavigateTo(data);
+        } else if (data.action === "present_image") {
+          handlePresentImage(data);
         } else if (data.action === "black") {
           handleBlack();
         }
@@ -78,6 +80,28 @@
     Reveal.slide(0, data.verse_index);
   }
 
+  function handlePresentImage(data) {
+    var slidesContainer = document.querySelector('.reveal .slides');
+    slidesContainer.innerHTML = '';
+
+    var section = document.createElement('section');
+    section.setAttribute('data-background-color', '#000000');
+    section.style.display = 'flex';
+    section.style.alignItems = 'center';
+    section.style.justifyContent = 'center';
+    section.style.height = '100%';
+    var img = document.createElement('img');
+    img.src = data.image_url;
+    img.style.maxWidth = '1920px';
+    img.style.maxHeight = '1080px';
+    img.style.objectFit = 'contain';
+    section.appendChild(img);
+    slidesContainer.appendChild(section);
+
+    Reveal.sync();
+    Reveal.slide(0, 0);
+  }
+
   function handleBlack() {
     var slidesContainer = document.querySelector('.reveal .slides');
     slidesContainer.innerHTML = '';
@@ -97,6 +121,8 @@
         console.log('Restoring state:', state);
         if (state.action === 'present' && state.verses) {
           handlePresent(state);
+        } else if (state.action === 'present_image' && state.image_url) {
+          handlePresentImage(state);
         } else if (state.action === 'black') {
           handleBlack();
         }

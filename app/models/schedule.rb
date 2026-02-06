@@ -21,6 +21,7 @@ class Schedule < ApplicationRecord
   acts_as_tenant(:account)
 
   has_many :schedule_items, -> { order(position: :asc) }, dependent: :destroy
+  has_many :schedule_images, dependent: :destroy
   has_many :songs, through: :schedule_items, source: :item, source_type: 'Song'
   has_many :scriptures, through: :schedule_items, source: :item, source_type: 'Scripture'
 end

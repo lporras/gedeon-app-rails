@@ -68,13 +68,17 @@ ActiveAdmin.register Schedule do
       item_id: item_id,
       position: position
     )
+    item = schedule_item.item
+    title = item.respond_to?(:title) ? item.title : item.bible_reference
     render json: {
       id: schedule_item.id,
       item_type: item_type,
       item_id: item_id,
       position: position,
-      title: schedule_item.item.respond_to?(:title) ? schedule_item.item.title : schedule_item.item.bible_reference,
-      content: schedule_item.item.content
+      title: title,
+      content: item.respond_to?(:content) ? item.content : nil,
+      image_url: item.is_a?(ScheduleImage) ? item.image.url : nil,
+      thumb_url: item.is_a?(ScheduleImage) ? item.image.thumb.url : nil
     }
   end
 
@@ -101,7 +105,13 @@ ActiveAdmin.register Schedule do
     schedule_item = schedule.schedule_items.find(params[:schedule_item_id])
     item = schedule_item.item
 
-    if item.is_a?(Song)
+    if item.is_a?(ScheduleImage)
+      payload = {
+        action: "present_image",
+        image_url: item.image.url
+      }
+      schedule.update_column(:presenter_state, payload)
+    elsif item.is_a?(Song)
       verses = item.content.split(/\n\s*\n/).map(&:strip).reject(&:blank?)
       payload = {
         action: "present",
@@ -109,6 +119,7 @@ ActiveAdmin.register Schedule do
         title: item.title,
         verses: verses
       }
+      schedule.update_column(:presenter_state, payload.merge(verse_index: 1))
     else
       scripture_verses = item.content.split(/\n/).map(&:strip).reject(&:blank?)
       payload = {
@@ -117,10 +128,8 @@ ActiveAdmin.register Schedule do
         title: item.bible_reference,
         verses: scripture_verses
       }
+      schedule.update_column(:presenter_state, payload.merge(verse_index: 1))
     end
-
-    # Persist the presentation state so presenter can restore on refresh
-    schedule.update_column(:presenter_state, payload.merge(verse_index: 1))
 
     ActionCable.server.broadcast("schedule_presenter_#{schedule.id}", payload)
     render json: payload
@@ -184,6 +193,45 @@ ActiveAdmin.register Schedule do
     chapter = book.chapters.find { |c| c.num == params[:chapter_num].to_i } || book.chapters.first
     verses = chapter.verses.map { |v| { num: v.num, text: v.text, book_id: v.book_id, chapter_num: v.chapter_num } }
     render json: verses
+  end
+
+  # List images for a schedule
+  member_action :list_images, method: :get do
+    schedule = resource
+    images = schedule.schedule_images.order(created_at: :desc)
+    render json: images.map { |img|
+      { id: img.id, name: img.title, thumb_url: img.image.thumb.url, url: img.image.url }
+    }
+  end
+
+  # Upload image to schedule
+  member_action :upload_image, method: :post do
+    schedule = resource
+    image = schedule.schedule_images.create!(image: params[:image], name: params[:name])
+    render json: { id: image.id, name: image.title, thumb_url: image.image.thumb.url, url: image.image.url }
+  end
+
+  # Delete image from schedule
+  member_action :delete_image, method: :delete do
+    schedule = resource
+    image = schedule.schedule_images.find(params[:image_id])
+    image.destroy!
+    render json: { success: true }
+  end
+
+  # Present an image - broadcasts to the channel
+  member_action :present_image, method: :post do
+    schedule = resource
+    image = schedule.schedule_images.find(params[:image_id])
+    payload = {
+      action: "present_image",
+      image_url: image.image.url
+    }
+
+    schedule.update_column(:presenter_state, payload)
+
+    ActionCable.server.broadcast("schedule_presenter_#{schedule.id}", payload)
+    render json: payload
   end
 
   # Create scripture from bible lookup and add to schedule

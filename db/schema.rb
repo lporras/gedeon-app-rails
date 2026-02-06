@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_02_06_224724) do
+ActiveRecord::Schema[7.0].define(version: 2026_02_06_231241) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
@@ -95,6 +95,15 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_06_224724) do
     t.index ["song_id"], name: "index_playlists_songs_on_song_id"
   end
 
+  create_table "schedule_images", force: :cascade do |t|
+    t.bigint "schedule_id"
+    t.string "image"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "name"
+    t.index ["schedule_id"], name: "index_schedule_images_on_schedule_id"
+  end
+
   create_table "schedule_items", force: :cascade do |t|
     t.bigint "schedule_id", null: false
     t.string "item_type", null: false
@@ -170,6 +179,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_02_06_224724) do
 
   add_foreign_key "admin_users", "accounts"
   add_foreign_key "playlists", "accounts"
+  add_foreign_key "schedule_images", "schedules"
   add_foreign_key "schedule_items", "schedules"
   add_foreign_key "schedules", "accounts"
   add_foreign_key "scriptures", "accounts"

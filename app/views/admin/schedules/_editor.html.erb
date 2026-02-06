@@ -14,6 +14,10 @@
      data-schedule-editor-bible-verses-url-value="<%= bible_verses_admin_schedules_path %>"
      data-schedule-editor-create-and-add-scripture-url-value="<%= create_and_add_scripture_admin_schedule_path(schedule) %>"
      data-schedule-editor-bible-versions-value="<%= Scripture.bible_versions.to_json %>"
+     data-schedule-editor-list-images-url-value="<%= list_images_admin_schedule_path(schedule) %>"
+     data-schedule-editor-upload-image-url-value="<%= upload_image_admin_schedule_path(schedule) %>"
+     data-schedule-editor-delete-image-url-value="<%= delete_image_admin_schedule_path(schedule) %>"
+     data-schedule-editor-present-image-url-value="<%= present_image_admin_schedule_path(schedule) %>"
      >
 
   <!-- Top bar -->
@@ -65,7 +69,13 @@
                    data-item-id="<%= si.item_id %>"
                    data-action="dragstart->schedule-editor#dragStartItem">
                 <span class="schedule-editor__item-icon">
-                  <%= si.item_type == 'Song' ? '♪' : '📖' %>
+                  <% if si.item_type == 'ScheduleImage' %>
+                    <img src="<%= si.item.image.thumb.url %>" class="schedule-editor__item-thumb" />
+                  <% elsif si.item_type == 'Song' %>
+                    ♪
+                  <% else %>
+                    📖
+                  <% end %>
                 </span>
                 <span class="schedule-editor__item-title">
                   <%= si.item.respond_to?(:title) ? si.item.title : si.item.bible_reference %>
@@ -171,6 +181,30 @@
                   disabled>
             Add to Schedule
           </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Images panel -->
+  <div class="schedule-editor__images-section">
+    <div class="panel">
+      <h3>Images</h3>
+      <div class="panel_contents">
+        <div class="schedule-editor__image-upload">
+          <input type="text"
+                 placeholder="Image name..."
+                 class="schedule-editor__search"
+                 data-schedule-editor-target="imageName" />
+          <input type="file"
+                 accept="image/*"
+                 class="schedule-editor__image-input"
+                 data-schedule-editor-target="imageUpload"
+                 data-action="change->schedule-editor#uploadImage" />
+        </div>
+        <div class="schedule-editor__image-grid"
+             data-schedule-editor-target="imageList">
+          <!-- Images loaded via JS -->
         </div>
       </div>
     </div>

@@ -13,7 +13,10 @@ class ScheduleEditorController extends Stimulus.Controller {
     'chapterList',
     'verseList',
     'verseFilter',
-    'addScriptureBtn'
+    'addScriptureBtn',
+    'imageUpload',
+    'imageName',
+    'imageList'
   ]
 
   static values = {
@@ -30,7 +33,10 @@ class ScheduleEditorController extends Stimulus.Controller {
     bibleChaptersUrl: String,
     bibleVersesUrl: String,
     createAndAddScriptureUrl: String,
-    bibleVersions: Array
+    bibleVersions: Array,
+    listImagesUrl: String,
+    uploadImageUrl: String,
+    deleteImageUrl: String
   }
 
   connect() {
@@ -49,6 +55,7 @@ class ScheduleEditorController extends Stimulus.Controller {
     this.allBooks = [];
     this.allVerses = [];
     this.loadBooks();
+    this.loadImages();
   }
 
   // --- Song Search ---
@@ -185,7 +192,12 @@ class ScheduleEditorController extends Stimulus.Controller {
   }
 
   appendScheduleItem(item) {
-    var icon = item.item_type === 'Song' ? '♪' : '📖';
+    var icon;
+    if (item.item_type === 'ScheduleImage' && item.thumb_url) {
+      icon = '<img src="' + item.thumb_url + '" class="schedule-editor__item-thumb" />';
+    } else {
+      icon = item.item_type === 'Song' ? '♪' : '📖';
+    }
     var div = document.createElement('div');
     div.className = 'schedule-editor__item';
     div.setAttribute('draggable', 'true');
@@ -247,9 +259,13 @@ class ScheduleEditorController extends Stimulus.Controller {
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      self.currentVerses = data.verses || [];
-      self.currentVerseIndex = 0;
-      self.renderPreview(data);
+      if (data.action === 'present_image') {
+        self.renderImagePreview(data.image_url);
+      } else {
+        self.currentVerses = data.verses || [];
+        self.currentVerseIndex = 0;
+        self.renderPreview(data);
+      }
       self.highlightActiveItem(scheduleItemId);
     });
   }
@@ -612,6 +628,92 @@ class ScheduleEditorController extends Stimulus.Controller {
       self.updateAddScriptureBtn();
       self.renderVerseList(self.allVerses);
     });
+  }
+
+  // --- Images ---
+  loadImages() {
+    var self = this;
+    fetch(this.listImagesUrlValue, {
+      headers: { 'Accept': 'application/json', 'X-CSRF-Token': this.csrfToken() }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(images) {
+      self.renderImageList(images);
+    });
+  }
+
+  renderImageList(images) {
+    var html = '';
+    images.forEach(function(img) {
+      html += '<div class="schedule-editor__image-card" data-image-id="' + img.id + '">' +
+              '<img src="' + img.thumb_url + '" alt="" class="schedule-editor__image-thumb" />' +
+              '<div class="schedule-editor__image-actions">' +
+              '<span class="schedule-editor__image-name">' + escapeHtml(img.name) + '</span>' +
+              '<button type="button" class="schedule-editor__btn schedule-editor__btn--add" ' +
+              'data-action="click->schedule-editor#addImageToSchedule" ' +
+              'data-image-id="' + img.id + '">+ Add</button>' +
+              '<button type="button" class="schedule-editor__btn schedule-editor__btn--remove" ' +
+              'data-action="click->schedule-editor#deleteImage" ' +
+              'data-image-id="' + img.id + '">&times;</button>' +
+              '</div>' +
+              '</div>';
+    });
+    if (images.length === 0) {
+      html = '<p class="schedule-editor__empty">No images uploaded</p>';
+    }
+    this.imageListTarget.innerHTML = html;
+  }
+
+  uploadImage() {
+    var self = this;
+    var file = this.imageUploadTarget.files[0];
+    if (!file) return;
+
+    var name = this.imageNameTarget.value || '';
+    var formData = new FormData();
+    formData.append('image', file);
+    formData.append('name', name);
+
+    fetch(this.uploadImageUrlValue, {
+      method: 'POST',
+      headers: { 'X-CSRF-Token': this.csrfToken() },
+      body: formData
+    })
+    .then(function(r) { return r.json(); })
+    .then(function() {
+      self.imageUploadTarget.value = '';
+      self.imageNameTarget.value = '';
+      self.loadImages();
+    });
+  }
+
+  deleteImage(event) {
+    var imageId = event.currentTarget.dataset.imageId;
+    var self = this;
+
+    fetch(this.deleteImageUrlValue + '?image_id=' + imageId, {
+      method: 'DELETE',
+      headers: { 'X-CSRF-Token': this.csrfToken(), 'Accept': 'application/json' }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function() {
+      self.loadImages();
+    });
+  }
+
+  renderImagePreview(imageUrl) {
+    var html = '<div class="schedule-editor__preview-title">' +
+               '<strong>Image</strong>' +
+               '</div>' +
+               '<div class="schedule-editor__preview-image">' +
+               '<img src="' + imageUrl + '" alt="" style="max-width:100%;max-height:300px;" />' +
+               '</div>';
+    this.previewTarget.innerHTML = html;
+  }
+
+  addImageToSchedule(event) {
+    var imageId = event.currentTarget.dataset.imageId;
+    this.addItem('ScheduleImage', imageId);
   }
 
   // --- Black Screen ---
