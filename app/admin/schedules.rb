@@ -42,7 +42,7 @@ ActiveAdmin.register Schedule do
 
   # Search songs
   collection_action :search_songs, method: :get do
-    songs = Song.where("title ILIKE ?", "%#{params[:q]}%").limit(20)
+    songs = Song.where("title ILIKE :q OR content ILIKE :q", q: "%#{params[:q]}%").order(title: :asc).limit(20)
     render json: songs.map { |s| { id: s.id, title: s.title, content: s.content } }
   end
 
