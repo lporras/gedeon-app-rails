@@ -141,4 +141,67 @@ ActiveAdmin.register Schedule do
     ActionCable.server.broadcast("schedule_presenter_#{schedule.id}", payload)
     render json: { success: true }
   end
+
+  # Bible lookup: books
+  collection_action :bible_books, method: :get do
+    bible = SimpleBibleLoader.load_bible(params[:bible_version] || "NVI")
+    books = bible.books.map { |b| { book_title: b.title } }
+    render json: books
+  end
+
+  # Bible lookup: chapters
+  collection_action :bible_chapters, method: :get do
+    bible = SimpleBibleLoader.load_bible(params[:bible_version] || "NVI")
+    book = bible.books.find { |b| b.title == params[:book_id] } || bible.books.first
+    chapters = book.chapters.map { |c| { chapter_num: c.num, book_title: c.book_title } }
+    render json: chapters
+  end
+
+  # Bible lookup: verses
+  collection_action :bible_verses, method: :get do
+    bible = SimpleBibleLoader.load_bible(params[:bible_version] || "NVI")
+    book = bible.books.find { |b| b.title == params[:book_id] } || bible.books.first
+    chapter = book.chapters.find { |c| c.num == params[:chapter_num].to_i } || book.chapters.first
+    verses = chapter.verses.map { |v| { num: v.num, text: v.text, book_id: v.book_id, chapter_num: v.chapter_num } }
+    render json: verses
+  end
+
+  # Create scripture from bible lookup and add to schedule
+  member_action :create_and_add_scripture, method: :post do
+    schedule = resource
+    verse_nums = params[:verse_nums].map(&:to_i).sort
+    from_num = verse_nums.first
+    to_num = verse_nums.last
+
+    bible = SimpleBibleLoader.load_bible(params[:bible_version] || "NVI")
+    book = bible.books.find { |b| b.title == params[:book_id] }
+    chapter = book.chapters.find { |c| c.num == params[:chapter_num].to_i }
+    selected_verses = chapter.verses.select { |v| verse_nums.include?(v.num) }
+    content = selected_verses.map { |v| "#{v.num}. #{v.text}" }.join("\n")
+
+    scripture = Scripture.create!(
+      book_id: params[:book_id],
+      chapter_num: params[:chapter_num],
+      from: from_num,
+      to: to_num == from_num ? nil : to_num,
+      bible_version: params[:bible_version],
+      content: content
+    )
+
+    position = schedule.schedule_items.count
+    schedule_item = schedule.schedule_items.create!(
+      item_type: "Scripture",
+      item_id: scripture.id,
+      position: position
+    )
+
+    render json: {
+      id: schedule_item.id,
+      item_type: "Scripture",
+      item_id: scripture.id,
+      position: position,
+      title: scripture.bible_reference,
+      content: scripture.content
+    }
+  end
 end

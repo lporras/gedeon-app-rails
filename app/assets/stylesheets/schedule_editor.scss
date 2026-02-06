@@ -276,4 +276,150 @@
       box-shadow: inset 3px 0 0 #2ecc71;
     }
   }
+
+  // Bible Lookup
+  &__bible-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #e0e0e0;
+  }
+
+  &__bible-tab {
+    padding: 6px 16px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: 600;
+    color: #888;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.2s, border-color 0.2s;
+
+    &:hover {
+      color: #555;
+    }
+
+    &--active {
+      color: #3498db;
+      border-bottom-color: #3498db;
+    }
+  }
+
+  &__bible-panels {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  &__bible-panel {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__bible-panel-header {
+    font-size: 0.75em;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #888;
+    padding: 4px 6px;
+    letter-spacing: 0.5px;
+  }
+
+  &__bible-filter {
+    width: 100%;
+    padding: 5px 8px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin-bottom: 4px;
+    font-size: 0.8em;
+    box-sizing: border-box;
+  }
+
+  &__bible-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    border-radius: 3px;
+    flex: 1;
+  }
+
+  &__bible-item {
+    padding: 5px 8px;
+    font-size: 0.8em;
+    cursor: pointer;
+    border-bottom: 1px solid #f5f5f5;
+    transition: background 0.15s;
+
+    &:hover {
+      background: #f0f8ff;
+    }
+
+    &--active {
+      background: #e3f2fd;
+      font-weight: 600;
+      color: #1976d2;
+    }
+  }
+
+  &__bible-verse {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 4px 8px;
+    font-size: 0.8em;
+    cursor: pointer;
+    border-bottom: 1px solid #f5f5f5;
+    transition: background 0.15s;
+
+    &:hover {
+      background: #f0f8ff;
+    }
+
+    &--selected {
+      background: #e8f5e9;
+    }
+
+    input[type="checkbox"] {
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+  }
+
+  &__bible-verse-num {
+    font-weight: 700;
+    color: #666;
+    flex-shrink: 0;
+    min-width: 20px;
+  }
+
+  &__bible-verse-text {
+    flex: 1;
+    line-height: 1.4;
+  }
+
+  &__btn--add-scripture {
+    width: 100%;
+    padding: 8px 14px;
+    background: #27ae60;
+    color: #fff;
+    font-size: 0.85em;
+    font-weight: 600;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+
+    &:hover:not(:disabled) {
+      background: #219a52;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
 }

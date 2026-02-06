@@ -8,7 +8,13 @@
      data-schedule-editor-reorder-items-url-value="<%= reorder_items_admin_schedule_path(schedule) %>"
      data-schedule-editor-present-item-url-value="<%= present_item_admin_schedule_path(schedule) %>"
      data-schedule-editor-navigate-to-url-value="<%= navigate_to_admin_schedule_path(schedule) %>"
-     data-schedule-editor-black-screen-url-value="<%= black_screen_admin_schedule_path(schedule) %>">
+     data-schedule-editor-black-screen-url-value="<%= black_screen_admin_schedule_path(schedule) %>"
+     data-schedule-editor-bible-books-url-value="<%= bible_books_admin_schedules_path %>"
+     data-schedule-editor-bible-chapters-url-value="<%= bible_chapters_admin_schedules_path %>"
+     data-schedule-editor-bible-verses-url-value="<%= bible_verses_admin_schedules_path %>"
+     data-schedule-editor-create-and-add-scripture-url-value="<%= create_and_add_scripture_admin_schedule_path(schedule) %>"
+     data-schedule-editor-bible-versions-value="<%= Scripture.bible_versions.to_json %>"
+     >
 
   <!-- Top bar -->
   <div class="schedule-editor__toolbar">
@@ -94,7 +100,7 @@
         <h3>Scriptures</h3>
         <div class="panel_contents">
           <input type="text"
-                 placeholder="Search scriptures..."
+                 placeholder="Search existing scriptures..."
                  class="schedule-editor__search"
                  data-schedule-editor-target="scriptureSearch"
                  data-action="input->schedule-editor#searchScriptures" />
@@ -102,6 +108,69 @@
                data-schedule-editor-target="scriptureList">
             <!-- Scriptures loaded via JS -->
           </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Look Up Scripture</h3>
+        <div class="panel_contents">
+          <!-- Bible version tabs -->
+          <div class="schedule-editor__bible-tabs" data-schedule-editor-target="bibleTabs">
+            <% Scripture.bible_versions.each_with_index do |version, i| %>
+              <button type="button"
+                      class="schedule-editor__bible-tab<%= ' schedule-editor__bible-tab--active' if i == 0 %>"
+                      data-action="click->schedule-editor#switchBibleTab"
+                      data-bible-version="<%= version %>">
+                <%= version %>
+              </button>
+            <% end %>
+          </div>
+
+          <!-- Three nested panels: Books | Chapters | Verses -->
+          <div class="schedule-editor__bible-panels">
+            <!-- Books panel -->
+            <div class="schedule-editor__bible-panel">
+              <div class="schedule-editor__bible-panel-header">Books</div>
+              <input type="text"
+                     placeholder="Filter books..."
+                     class="schedule-editor__bible-filter"
+                     data-schedule-editor-target="bookFilter"
+                     data-action="input->schedule-editor#filterBooks" />
+              <div class="schedule-editor__bible-list"
+                   data-schedule-editor-target="bookList">
+              </div>
+            </div>
+
+            <!-- Chapters panel -->
+            <div class="schedule-editor__bible-panel">
+              <div class="schedule-editor__bible-panel-header">Chapters</div>
+              <div class="schedule-editor__bible-list"
+                   data-schedule-editor-target="chapterList">
+              </div>
+            </div>
+
+            <!-- Verses panel -->
+            <div class="schedule-editor__bible-panel">
+              <div class="schedule-editor__bible-panel-header">Verses</div>
+              <input type="text"
+                     placeholder="Filter verses..."
+                     class="schedule-editor__bible-filter"
+                     data-schedule-editor-target="verseFilter"
+                     data-action="input->schedule-editor#filterVerses" />
+              <div class="schedule-editor__bible-list"
+                   data-schedule-editor-target="verseList">
+              </div>
+            </div>
+          </div>
+
+          <!-- Add to schedule button -->
+          <button type="button"
+                  class="schedule-editor__btn schedule-editor__btn--add-scripture"
+                  data-schedule-editor-target="addScriptureBtn"
+                  data-action="click->schedule-editor#addScriptureToSchedule"
+                  disabled>
+            Add to Schedule
+          </button>
         </div>
       </div>
     </div>

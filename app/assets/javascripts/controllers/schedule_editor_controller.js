@@ -6,7 +6,14 @@ class ScheduleEditorController extends Stimulus.Controller {
     'scriptureList',
     'scheduleList',
     'dropPlaceholder',
-    'preview'
+    'preview',
+    'bibleTabs',
+    'bookList',
+    'bookFilter',
+    'chapterList',
+    'verseList',
+    'verseFilter',
+    'addScriptureBtn'
   ]
 
   static values = {
@@ -18,7 +25,12 @@ class ScheduleEditorController extends Stimulus.Controller {
     reorderItemsUrl: String,
     presentItemUrl: String,
     navigateToUrl: String,
-    blackScreenUrl: String
+    blackScreenUrl: String,
+    bibleBooksUrl: String,
+    bibleChaptersUrl: String,
+    bibleVersesUrl: String,
+    createAndAddScriptureUrl: String,
+    bibleVersions: Array
   }
 
   connect() {
@@ -28,6 +40,15 @@ class ScheduleEditorController extends Stimulus.Controller {
     this.searchSongs();
     this.searchScriptures();
     this.updateDropPlaceholder();
+
+    // Bible lookup state
+    this.currentBibleVersion = (this.bibleVersionsValue && this.bibleVersionsValue[0]) || 'NVI';
+    this.selectedBookId = null;
+    this.selectedChapterNum = null;
+    this.selectedVerseNums = [];
+    this.allBooks = [];
+    this.allVerses = [];
+    this.loadBooks();
   }
 
   // --- Song Search ---
@@ -320,6 +341,276 @@ class ScheduleEditorController extends Stimulus.Controller {
       } else {
         el.classList.remove('schedule-editor__item--active');
       }
+    });
+  }
+
+  // --- Bible Lookup ---
+  switchBibleTab(event) {
+    var version = event.currentTarget.dataset.bibleVersion;
+    this.currentBibleVersion = version;
+
+    var tabs = this.bibleTabsTarget.querySelectorAll('.schedule-editor__bible-tab');
+    tabs.forEach(function(tab) {
+      if (tab.dataset.bibleVersion === version) {
+        tab.classList.add('schedule-editor__bible-tab--active');
+      } else {
+        tab.classList.remove('schedule-editor__bible-tab--active');
+      }
+    });
+
+    this.selectedBookId = null;
+    this.selectedChapterNum = null;
+    this.selectedVerseNums = [];
+    this.chapterListTarget.innerHTML = '';
+    this.verseListTarget.innerHTML = '';
+    this.bookFilterTarget.value = '';
+    this.verseFilterTarget.value = '';
+    this.updateAddScriptureBtn();
+    this.loadBooks();
+  }
+
+  loadBooks() {
+    var self = this;
+    var url = this.bibleBooksUrlValue + '?bible_version=' + encodeURIComponent(this.currentBibleVersion);
+
+    fetch(url, {
+      headers: { 'Accept': 'application/json', 'X-CSRF-Token': this.csrfToken() }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(books) {
+      self.allBooks = books;
+      self.renderBookList(books);
+    });
+  }
+
+  renderBookList(books) {
+    var self = this;
+    var html = '';
+    books.forEach(function(book) {
+      var activeClass = self.selectedBookId === book.book_title ? ' schedule-editor__bible-item--active' : '';
+      html += '<div class="schedule-editor__bible-item' + activeClass + '" ' +
+              'data-action="click->schedule-editor#selectBook" ' +
+              'data-book-id="' + escapeHtml(book.book_title) + '">' +
+              escapeHtml(book.book_title) +
+              '</div>';
+    });
+    if (books.length === 0) {
+      html = '<p class="schedule-editor__empty">No books found</p>';
+    }
+    this.bookListTarget.innerHTML = html;
+  }
+
+  filterBooks() {
+    var query = this.bookFilterTarget.value.toLowerCase();
+    var filtered = this.allBooks.filter(function(book) {
+      return book.book_title.toLowerCase().indexOf(query) !== -1;
+    });
+    this.renderBookList(filtered);
+  }
+
+  selectBook(event) {
+    var bookId = event.currentTarget.dataset.bookId;
+    this.selectedBookId = bookId;
+    this.selectedChapterNum = null;
+    this.selectedVerseNums = [];
+    this.verseListTarget.innerHTML = '';
+    this.verseFilterTarget.value = '';
+    this.updateAddScriptureBtn();
+
+    var items = this.bookListTarget.querySelectorAll('.schedule-editor__bible-item');
+    items.forEach(function(el) {
+      if (el.dataset.bookId === bookId) {
+        el.classList.add('schedule-editor__bible-item--active');
+      } else {
+        el.classList.remove('schedule-editor__bible-item--active');
+      }
+    });
+
+    this.loadChapters();
+  }
+
+  loadChapters() {
+    var self = this;
+    var url = this.bibleChaptersUrlValue +
+              '?bible_version=' + encodeURIComponent(this.currentBibleVersion) +
+              '&book_id=' + encodeURIComponent(this.selectedBookId);
+
+    fetch(url, {
+      headers: { 'Accept': 'application/json', 'X-CSRF-Token': this.csrfToken() }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(chapters) {
+      self.renderChapterList(chapters);
+    });
+  }
+
+  renderChapterList(chapters) {
+    var self = this;
+    var html = '';
+    chapters.forEach(function(chapter) {
+      var activeClass = self.selectedChapterNum === chapter.chapter_num ? ' schedule-editor__bible-item--active' : '';
+      html += '<div class="schedule-editor__bible-item' + activeClass + '" ' +
+              'data-action="click->schedule-editor#selectChapter" ' +
+              'data-chapter-num="' + chapter.chapter_num + '">' +
+              'Chapter ' + chapter.chapter_num +
+              '</div>';
+    });
+    if (chapters.length === 0) {
+      html = '<p class="schedule-editor__empty">Select a book</p>';
+    }
+    this.chapterListTarget.innerHTML = html;
+  }
+
+  selectChapter(event) {
+    var chapterNum = parseInt(event.currentTarget.dataset.chapterNum);
+    this.selectedChapterNum = chapterNum;
+    this.selectedVerseNums = [];
+    this.verseFilterTarget.value = '';
+    this.updateAddScriptureBtn();
+
+    var items = this.chapterListTarget.querySelectorAll('.schedule-editor__bible-item');
+    items.forEach(function(el) {
+      if (parseInt(el.dataset.chapterNum) === chapterNum) {
+        el.classList.add('schedule-editor__bible-item--active');
+      } else {
+        el.classList.remove('schedule-editor__bible-item--active');
+      }
+    });
+
+    this.loadVerses();
+  }
+
+  loadVerses() {
+    var self = this;
+    var url = this.bibleVersesUrlValue +
+              '?bible_version=' + encodeURIComponent(this.currentBibleVersion) +
+              '&book_id=' + encodeURIComponent(this.selectedBookId) +
+              '&chapter_num=' + encodeURIComponent(this.selectedChapterNum);
+
+    fetch(url, {
+      headers: { 'Accept': 'application/json', 'X-CSRF-Token': this.csrfToken() }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(verses) {
+      self.allVerses = verses;
+      self.renderVerseList(verses);
+    });
+  }
+
+  renderVerseList(verses) {
+    var self = this;
+    var html = '';
+    verses.forEach(function(verse) {
+      var checkedAttr = self.selectedVerseNums.indexOf(verse.num) !== -1 ? ' checked' : '';
+      var selectedClass = self.selectedVerseNums.indexOf(verse.num) !== -1 ? ' schedule-editor__bible-verse--selected' : '';
+      html += '<label class="schedule-editor__bible-verse' + selectedClass + '" ' +
+              'data-verse-num="' + verse.num + '">' +
+              '<input type="checkbox" value="' + verse.num + '"' + checkedAttr +
+              ' data-action="change->schedule-editor#toggleVerse" />' +
+              '<span class="schedule-editor__bible-verse-num">' + verse.num + '.</span> ' +
+              '<span class="schedule-editor__bible-verse-text">' + escapeHtml(verse.text) + '</span>' +
+              '</label>';
+    });
+    if (verses.length === 0) {
+      html = '<p class="schedule-editor__empty">Select a chapter</p>';
+    }
+    this.verseListTarget.innerHTML = html;
+  }
+
+  filterVerses() {
+    var query = this.verseFilterTarget.value.trim();
+    var self = this;
+
+    // Check for range pattern like "18-20"
+    var rangeMatch = query.match(/^(\d+)\s*-\s*(\d+)$/);
+    if (rangeMatch) {
+      var from = parseInt(rangeMatch[1]);
+      var to = parseInt(rangeMatch[2]);
+      if (from > to) { var tmp = from; from = to; to = tmp; }
+
+      // Auto-select all verses in the range
+      this.allVerses.forEach(function(verse) {
+        if (verse.num >= from && verse.num <= to) {
+          if (self.selectedVerseNums.indexOf(verse.num) === -1) {
+            self.selectedVerseNums.push(verse.num);
+          }
+        }
+      });
+      this.updateAddScriptureBtn();
+
+      // Filter to show only the range
+      var filtered = this.allVerses.filter(function(verse) {
+        return verse.num >= from && verse.num <= to;
+      });
+      this.renderVerseList(filtered);
+      return;
+    }
+
+    var lowerQuery = query.toLowerCase();
+    var filtered = this.allVerses.filter(function(verse) {
+      return verse.num.toString().indexOf(lowerQuery) !== -1 ||
+             verse.text.toLowerCase().indexOf(lowerQuery) !== -1;
+    });
+    this.renderVerseList(filtered);
+  }
+
+  toggleVerse(event) {
+    var num = parseInt(event.currentTarget.value);
+    var idx = this.selectedVerseNums.indexOf(num);
+    if (idx !== -1) {
+      this.selectedVerseNums.splice(idx, 1);
+    } else {
+      this.selectedVerseNums.push(num);
+    }
+
+    // Update visual selection
+    var label = event.currentTarget.closest('.schedule-editor__bible-verse');
+    if (event.currentTarget.checked) {
+      label.classList.add('schedule-editor__bible-verse--selected');
+    } else {
+      label.classList.remove('schedule-editor__bible-verse--selected');
+    }
+
+    this.updateAddScriptureBtn();
+  }
+
+  updateAddScriptureBtn() {
+    if (this.hasAddScriptureBtnTarget) {
+      var enabled = this.selectedVerseNums.length > 0 &&
+                    this.selectedBookId &&
+                    this.selectedChapterNum;
+      this.addScriptureBtnTarget.disabled = !enabled;
+    }
+  }
+
+  addScriptureToSchedule() {
+    if (this.selectedVerseNums.length === 0) return;
+
+    var self = this;
+    var formData = new FormData();
+    formData.append('bible_version', this.currentBibleVersion);
+    formData.append('book_id', this.selectedBookId);
+    formData.append('chapter_num', this.selectedChapterNum);
+    this.selectedVerseNums.sort(function(a, b) { return a - b; });
+    this.selectedVerseNums.forEach(function(num) {
+      formData.append('verse_nums[]', num);
+    });
+
+    fetch(this.createAndAddScriptureUrlValue, {
+      method: 'POST',
+      headers: { 'X-CSRF-Token': this.csrfToken() },
+      body: formData
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(item) {
+      self.appendScheduleItem(item);
+      self.updateDropPlaceholder();
+      self.searchScriptures();
+
+      // Reset verse selection
+      self.selectedVerseNums = [];
+      self.updateAddScriptureBtn();
+      self.renderVerseList(self.allVerses);
     });
   }
 
