@@ -28,6 +28,7 @@ class Scripture < ApplicationRecord
   acts_as_tenant(:account)
   belongs_to :playlist_section, optional: true
   has_one :playlist, through: :playlist_section
+  has_many :schedule_items, as: :item, dependent: :destroy
 
   serialize :verses, Array
 
