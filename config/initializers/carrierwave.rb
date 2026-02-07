@@ -32,6 +32,10 @@ CarrierWave.configure do |config|
       stub_responses:    false
     }
 
+    if Rails.env.development?
+      config.aws_credentials[:ssl_verify_peer] = false
+    end
+
     # Optional: Signing of download urls, e.g. for serving private content through
     # CloudFront. Be sure you have the `cloudfront-signer` gem installed and
     # configured:

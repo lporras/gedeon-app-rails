@@ -25,6 +25,7 @@ class Song < ApplicationRecord
 
   has_and_belongs_to_many :playlists
   has_and_belongs_to_many :video_links
+  has_many :schedule_items, as: :item, dependent: :destroy
 
   accepts_nested_attributes_for :video_links, reject_if: :all_blank, allow_destroy: true
 end

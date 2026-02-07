@@ -10,8 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_12_06_185557) do
+ActiveRecord::Schema[7.0].define(version: 2026_02_06_231241) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
   create_table "accounts", force: :cascade do |t|
@@ -29,11 +30,11 @@ ActiveRecord::Schema[7.0].define(version: 2025_12_06_185557) do
     t.bigint "resource_id"
     t.string "author_type"
     t.bigint "author_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id"
     t.index ["namespace"], name: "index_active_admin_comments_on_namespace"
-    t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource"
+    t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id"
   end
 
   create_table "admin_users", force: :cascade do |t|
@@ -94,6 +95,35 @@ ActiveRecord::Schema[7.0].define(version: 2025_12_06_185557) do
     t.index ["song_id"], name: "index_playlists_songs_on_song_id"
   end
 
+  create_table "schedule_images", force: :cascade do |t|
+    t.bigint "schedule_id"
+    t.string "image"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "name"
+    t.index ["schedule_id"], name: "index_schedule_images_on_schedule_id"
+  end
+
+  create_table "schedule_items", force: :cascade do |t|
+    t.bigint "schedule_id", null: false
+    t.string "item_type", null: false
+    t.bigint "item_id", null: false
+    t.integer "position", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_type", "item_id"], name: "index_schedule_items_on_item_type_and_item_id"
+    t.index ["schedule_id"], name: "index_schedule_items_on_schedule_id"
+  end
+
+  create_table "schedules", force: :cascade do |t|
+    t.string "name"
+    t.bigint "account_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.jsonb "presenter_state"
+    t.index ["account_id"], name: "index_schedules_on_account_id"
+  end
+
   create_table "scriptures", force: :cascade do |t|
     t.string "book_id"
     t.string "chapter_num"
@@ -149,6 +179,9 @@ ActiveRecord::Schema[7.0].define(version: 2025_12_06_185557) do
 
   add_foreign_key "admin_users", "accounts"
   add_foreign_key "playlists", "accounts"
+  add_foreign_key "schedule_images", "schedules"
+  add_foreign_key "schedule_items", "schedules"
+  add_foreign_key "schedules", "accounts"
   add_foreign_key "scriptures", "accounts"
   add_foreign_key "songs", "accounts"
   add_foreign_key "studies", "accounts"

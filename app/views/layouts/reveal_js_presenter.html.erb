@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <%= stylesheet_link_tag 'revealjs', media: 'all' %>
+    <%= javascript_include_tag "revealjs" %>
+    <%= javascript_include_tag "cable" %>
+    <title>Presenter</title>
+    <style>
+      body { background: #000; margin: 0; padding: 0; }
+      :root {
+        --r-main-font-size: 48px;
+        --r-main-color: #fff;
+        --r-heading-color: #fff;
+        --r-background-color: #000;
+      }
+      .reveal .slides {
+        text-align: center;
+      }
+      .reveal .slides section p {
+        font-size: 1.8em;
+        line-height: 1.5;
+        color: #fff;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+        text-align: center;
+      }
+      .reveal .slides section h2,
+      .reveal .slides section h3 {
+        color: #fff;
+      }
+      .reveal .slides section p.scripture-ref {
+        font-size: 0.8em;
+        color: #aaa;
+        font-style: italic;
+        margin-top: 1em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <%= yield %>
+      </div>
+    </div>
+    <script>
+      Reveal.initialize({
+        hash: false,
+        progress: false,
+        keyboard: false,
+        controls: false,
+        touch: false,
+        overview: false,
+        width: 1920,
+        height: 1080,
+        margin: 0.02,
+        minScale: 0.2,
+        maxScale: 3.0
+      });
+    </script>
+  </body>
+</html>
