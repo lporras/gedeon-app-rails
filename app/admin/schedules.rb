@@ -121,7 +121,7 @@ ActiveAdmin.register Schedule do
       }
       schedule.update_column(:presenter_state, payload.merge(verse_index: 1))
     else
-      scripture_verses = item.content.split(/\n/).map(&:strip).reject(&:blank?)
+      scripture_verses = item.content.split(/\n\s*\n/).map(&:strip).reject(&:blank?)
       payload = {
         action: "present",
         type: "scripture",

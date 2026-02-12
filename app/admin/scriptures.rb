@@ -27,8 +27,13 @@ ActiveAdmin.register Scripture do
     actions
   end
 
+  batch_action :destroy, confirm: "Are you sure you want to delete these scriptures?" do |ids|
+    batch_action_collection.find(ids).each(&:destroy)
+    redirect_to collection_path, notice: "Successfully deleted #{ids.size} scriptures"
+  end
+
   controller do
-    before_action :set_bible
+    before_action :set_bible, except: [:batch_action]
     before_action :set_bible_from_scripture, only: [:edit]
 
     def set_bible
