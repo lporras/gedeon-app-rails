@@ -23,5 +23,13 @@ class ScheduleItem < ApplicationRecord
   belongs_to :schedule
   belongs_to :item, polymorphic: true
 
+  after_destroy :destroy_scripture_item
+
   default_scope { order(position: :asc) }
+
+  private
+
+  def destroy_scripture_item
+    item.destroy if item_type == "Scripture"
+  end
 end
