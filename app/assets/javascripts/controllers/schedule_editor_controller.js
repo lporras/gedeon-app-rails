@@ -283,7 +283,12 @@ class ScheduleEditorController extends Stimulus.Controller {
     this.previewChunks = [];
     var slideIndex = 0;
     data.verses.forEach(function(verse) {
-      var lines = verse.split(/\n/);
+      // For scripture, also break on commas to match presenter
+      var raw = verse;
+      if (data.type === 'scripture') {
+        raw = verse.replace(/,\s*/g, ',\n');
+      }
+      var lines = raw.split(/\n/).map(function(l) { return l.trim(); }).filter(function(l) { return l.length > 0; });
       for (var i = 0; i < lines.length; i += maxLines) {
         var chunk = lines.slice(i, i + maxLines).join('\n');
         self.previewChunks.push(chunk);
@@ -544,12 +549,11 @@ class ScheduleEditorController extends Stimulus.Controller {
       var to = parseInt(rangeMatch[2]);
       if (from > to) { var tmp = from; from = to; to = tmp; }
 
-      // Auto-select all verses in the range
+      // Clear previous selections and auto-select only verses in the range
+      this.selectedVerseNums = [];
       this.allVerses.forEach(function(verse) {
         if (verse.num >= from && verse.num <= to) {
-          if (self.selectedVerseNums.indexOf(verse.num) === -1) {
-            self.selectedVerseNums.push(verse.num);
-          }
+          self.selectedVerseNums.push(verse.num);
         }
       });
       this.updateAddScriptureBtn();
