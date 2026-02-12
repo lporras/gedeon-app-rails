@@ -44,7 +44,7 @@ class ScheduleEditorController extends Stimulus.Controller {
     this.currentVerseIndex = 0;
     this.currentVerses = [];
     this.searchSongs();
-    this.searchScriptures();
+    if (this.hasScriptureSearchTarget) this.searchScriptures();
     this.updateDropPlaceholder();
 
     // Bible lookup state
@@ -94,6 +94,7 @@ class ScheduleEditorController extends Stimulus.Controller {
 
   // --- Scripture Search ---
   searchScriptures() {
+    if (!this.hasScriptureSearchTarget) return;
     var query = this.scriptureSearchTarget.value || '';
     var url = this.searchScripturesUrlValue + '?q=' + encodeURIComponent(query);
     var self = this;
@@ -108,6 +109,7 @@ class ScheduleEditorController extends Stimulus.Controller {
   }
 
   renderScriptureList(scriptures) {
+    if (!this.hasScriptureListTarget) return;
     var html = '';
     scriptures.forEach(function(scripture) {
       html += '<div class="schedule-editor__draggable" draggable="true" ' +
