@@ -14,6 +14,7 @@
         background: #000;
         font-family: "Source Sans Pro", Helvetica, sans-serif;
         color: #fff;
+        font-size: 16px;
       }
 
       /* ── Slide container ── */
@@ -34,7 +35,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 4vh 6vw;
+        padding: 3vh 3vw;
         opacity: 0;
         transition: opacity 0.5s ease;
         pointer-events: none;
@@ -48,25 +49,28 @@
       .slide h2 {
         line-height: 1.2;
         color: #fff;
+        font-weight: 700;
         text-align: center;
         word-wrap: break-word;
         overflow-wrap: break-word;
-        max-width: 90vw;
+        max-width: 95vw;
       }
 
       .slide .verse-text {
         line-height: 1.4;
         color: #fff;
+        font-weight: 700;
         text-align: center;
         word-wrap: break-word;
         overflow-wrap: break-word;
         white-space: normal;
-        max-width: 90vw;
+        max-width: 95vw;
       }
 
       .slide .scripture-ref {
-        color: #aaa;
+        color: #ccc;
         font-style: italic;
+        font-weight: 700;
         margin-top: 0.4em;
         text-align: center;
       }
@@ -80,9 +84,9 @@
         background: #e74c3c;
         border: 3px solid #fff;
         color: #fff;
-        font-size: 32px;
+        font-size: 2rem;
         font-weight: 700;
-        padding: 20px 40px;
+        padding: 1.25rem 2.5rem;
         border-radius: 12px;
         cursor: pointer;
         transition: opacity 0.3s ease, background 0.3s ease, transform 0.2s ease;
@@ -126,8 +130,8 @@
           slide.classList.add('active');
         }
 
-        var padH = window.innerWidth * 0.12;  // 6vw each side
-        var padV = window.innerHeight * 0.08; // 4vh each side
+        var padH = window.innerWidth * 0.06;  // 3vw each side
+        var padV = window.innerHeight * 0.06; // 3vh each side
         var maxW = window.innerWidth - padH;
         var maxH = window.innerHeight - padV;
 
@@ -138,14 +142,14 @@
         if (ref) ref.style.width = maxW + 'px';
 
         // Reserve space for scripture reference
-        var refReserve = ref ? 0.20 : 0;
+        var refReserve = ref ? 0.15 : 0;
 
-        // Binary search for the largest font size that fits
-        var lo = 10, hi = 400, best = lo;
+        // Binary search for the largest font size that fits (in rem)
+        var lo = 30, hi = 350, best = lo;
         while (lo <= hi) {
-          var mid = Math.floor((lo + hi) / 2);
-          target.style.fontSize = mid + 'px';
-          if (ref) ref.style.fontSize = Math.max(mid * 0.55, 20) + 'px';
+          var mid = Math.round((lo + hi) / 2);
+          target.style.fontSize = (mid / 10) + 'rem';
+          if (ref) ref.style.fontSize = Math.max(mid * 0.7 / 10, 2) + 'rem';
 
           var availH = ref ? maxH * (1 - refReserve) : maxH;
           var fits = target.scrollHeight <= availH;
@@ -157,8 +161,8 @@
             hi = mid - 1;
           }
         }
-        target.style.fontSize = best + 'px';
-        if (ref) ref.style.fontSize = Math.max(best * 0.55, 20) + 'px';
+        target.style.fontSize = (best / 10) + 'rem';
+        if (ref) ref.style.fontSize = Math.max(best * 0.7 / 10, 2) + 'rem';
 
         // Restore visibility state
         if (!wasActive) {
