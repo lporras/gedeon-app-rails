@@ -71,6 +71,32 @@
         text-align: center;
       }
 
+      /* ── Fullscreen button ── */
+      #fullscreen-btn {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        z-index: 9999;
+        background: #e74c3c;
+        border: 3px solid #fff;
+        color: #fff;
+        font-size: 32px;
+        font-weight: 700;
+        padding: 20px 40px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: opacity 0.3s ease, background 0.3s ease, transform 0.2s ease;
+        letter-spacing: 1px;
+      }
+      #fullscreen-btn:hover {
+        background: #c0392b;
+        transform: scale(1.05);
+      }
+      #fullscreen-btn.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
       /* ── Image slide ── */
       .slide.image-slide {
         padding: 0;
@@ -83,6 +109,7 @@
     </style>
   </head>
   <body>
+    <button id="fullscreen-btn">&#x26F6; Fullscreen</button>
     <div id="presenter">
       <%= yield %>
     </div>
@@ -142,6 +169,48 @@
       }
 
       window.fitText = fitText;
+    </script>
+    <script>
+      (function() {
+        var btn = document.getElementById('fullscreen-btn');
+
+        function toggleFullscreen() {
+          var isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+          if (isFs) {
+            if (document.exitFullscreen) {
+              document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+              document.webkitExitFullscreen();
+            }
+          } else {
+            var el = document.documentElement;
+            if (el.requestFullscreen) {
+              el.requestFullscreen();
+            } else if (el.webkitRequestFullscreen) {
+              el.webkitRequestFullscreen();
+            } else if (el.msRequestFullscreen) {
+              el.msRequestFullscreen();
+            }
+          }
+        }
+
+        btn.addEventListener('click', toggleFullscreen);
+
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'f' || e.key === 'F') {
+            e.preventDefault();
+            toggleFullscreen();
+          }
+        });
+
+        document.addEventListener('fullscreenchange', updateBtn);
+        document.addEventListener('webkitfullscreenchange', updateBtn);
+
+        function updateBtn() {
+          var isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+          btn.classList.toggle('hidden', isFs);
+        }
+      })();
     </script>
   </body>
 </html>
