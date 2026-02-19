@@ -104,8 +104,27 @@
       </div>
     </div>
 
-    <!-- Right: Look Up Scripture -->
+    <!-- Right: Preview -->
     <div class="schedule-editor__col">
+      <div class="panel">
+        <h3>Preview</h3>
+        <div class="panel_contents">
+          <div class="schedule-editor__preview"
+               data-schedule-editor-target="preview"
+               data-action="keydown->schedule-editor#handlePreviewKeydown"
+               tabindex="0">
+            <p class="schedule-editor__preview-empty">Select an item and click "Present Now" to preview</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom row: Look Up Scripture + Images side by side -->
+  <div class="schedule-editor__bottom-row">
+
+    <!-- Look Up Scripture -->
+    <div class="schedule-editor__scripture-section">
       <div class="panel">
         <h3>Look Up Scripture</h3>
         <div class="panel_contents">
@@ -169,44 +188,30 @@
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Images panel -->
-  <div class="schedule-editor__images-section">
-    <div class="panel">
-      <h3>Images</h3>
-      <div class="panel_contents">
-        <div class="schedule-editor__image-upload">
-          <input type="text"
-                 placeholder="Image name..."
-                 class="schedule-editor__search"
-                 data-schedule-editor-target="imageName" />
-          <input type="file"
-                 accept="image/*"
-                 class="schedule-editor__image-input"
-                 data-schedule-editor-target="imageUpload"
-                 data-action="change->schedule-editor#uploadImage" />
-        </div>
-        <div class="schedule-editor__image-grid"
-             data-schedule-editor-target="imageList">
-          <!-- Images loaded via JS -->
+    <!-- Images panel -->
+    <div class="schedule-editor__images-section">
+      <div class="panel">
+        <h3>Images</h3>
+        <div class="panel_contents">
+          <div class="schedule-editor__image-upload">
+            <input type="text"
+                   placeholder="Image name..."
+                   class="schedule-editor__search"
+                   data-schedule-editor-target="imageName" />
+            <input type="file"
+                   accept="image/*"
+                   class="schedule-editor__image-input"
+                   data-schedule-editor-target="imageUpload"
+                   data-action="change->schedule-editor#uploadImage" />
+          </div>
+          <div class="schedule-editor__image-grid"
+               data-schedule-editor-target="imageList">
+            <!-- Images loaded via JS -->
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Preview pane -->
-  <div class="schedule-editor__preview-section">
-    <div class="panel">
-      <h3>Preview</h3>
-      <div class="panel_contents">
-        <div class="schedule-editor__preview"
-             data-schedule-editor-target="preview"
-             data-action="keydown->schedule-editor#handlePreviewKeydown"
-             tabindex="0">
-          <p class="schedule-editor__preview-empty">Select an item and click "Present Now" to preview</p>
-        </div>
-      </div>
-    </div>
   </div>
 </div>

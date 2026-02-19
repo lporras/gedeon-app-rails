@@ -421,9 +421,27 @@
     line-height: 1.4;
   }
 
-  // Images panel
+  // Bottom row: Scripture + Images side by side
+  &__bottom-row {
+    display: flex;
+    gap: 15px;
+    align-items: stretch;
+  }
+
+  // Scripture lookup panel (same width as Songs column)
+  &__scripture-section {
+    flex: 1;
+    min-width: 0;
+
+    .panel {
+      margin-bottom: 0;
+    }
+  }
+
+  // Images panel (same width as Schedule Items + Preview columns)
   &__images-section {
-    margin-bottom: 15px;
+    flex: 2.5;
+    min-width: 0;
 
     .panel {
       margin-bottom: 0;
